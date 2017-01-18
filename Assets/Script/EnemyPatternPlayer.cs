@@ -38,10 +38,10 @@ public class EnemyPatternPlayer : MonoBehaviour
     public bool test;
 
     public int testPtNum;
-    
 
 
-    void Awake () 
+
+    void Awake()
     {
         Init();
 
@@ -54,9 +54,9 @@ public class EnemyPatternPlayer : MonoBehaviour
         SelectRandomPattern();
         SelectNowNode();
 
-	}
+    }
 
-	void Init()
+    void Init()
     {
         enemySpawnDelayTimer = 0f;
         nodeDelayTimer = 0f;
@@ -70,21 +70,21 @@ public class EnemyPatternPlayer : MonoBehaviour
     }
 
 
-	void Update () 
+    void Update()
     {
 
 
         PatternTimer();
-	
-	}
+
+    }
 
     void PatternTimer()
     {
-        if(nodeDelaying)    //노드 딜레이중
+        if (nodeDelaying)    //노드 딜레이중
         {
             nodeDelayTimer += Time.deltaTime;
 
-            if(selectedNode.nodeStartDelay <= nodeDelayTimer)
+            if (selectedNode.nodeStartDelay <= nodeDelayTimer)
             {
                 nodeDelayTimer = 0f;
                 enemySpawnDelayTimer = 0f;
@@ -92,7 +92,7 @@ public class EnemyPatternPlayer : MonoBehaviour
             }
 
         }
-        else if(spawnsDelaying)
+        else if (spawnsDelaying)
         {
             enemySpawnDelayTimer += Time.deltaTime;
 
@@ -111,7 +111,7 @@ public class EnemyPatternPlayer : MonoBehaviour
 
     void SelectRandomPattern()
     {
-        if(test)
+        if (test)
         {
             selectedPt = patterns[testPtNum];
         }
@@ -128,12 +128,13 @@ public class EnemyPatternPlayer : MonoBehaviour
 
     void SelectNowNode()
     {
-        if(nowNodeNum == selectedPt.nodeNum)
+        if (nowNodeNum == selectedPt.nodeNum)
         {
             SelectRandomPattern();
             return;
         }
 
+        nowSpawnEnemyNum = 0;
         selectedNode = selectedPt.nodeData[nowNodeNum];
         nodeDelaying = false;
         spawnsDelaying = true;
@@ -145,7 +146,7 @@ public class EnemyPatternPlayer : MonoBehaviour
 
         GameObject _SpawnPos = leftSpawnPosition;
 
-        if(!selectedNode.spawnDirLeft[nowSpawnEnemyNum])
+        if (!selectedNode.spawnDirLeft[nowSpawnEnemyNum])
             _SpawnPos = rightSpawnPosition;
 
         GameObject _spawnEnemy = (GameObject)Instantiate(enemy, _SpawnPos.transform.position, Quaternion.identity);
@@ -161,13 +162,13 @@ public class EnemyPatternPlayer : MonoBehaviour
         if (selectedNode.spawnEnemyNum == nowSpawnEnemyNum)
         {
             ++nowNodeNum;
-            SelectRandomPattern();
+            SelectNowNode();
             return;
         }
 
     }
 
-    
+
 
 
 
