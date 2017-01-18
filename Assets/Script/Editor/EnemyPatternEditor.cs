@@ -4,9 +4,9 @@ using System.Collections;
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(EnemyPattern))]
-public class EnemyPatternEditor : Editor 
+public class EnemyPatternEditor : Editor
 {
-    SerializedProperty nodeNum;     
+    SerializedProperty nodeNum;
     SerializedProperty nodeData;
 
     SerializedProperty spawnDelayMin;
@@ -30,9 +30,9 @@ public class EnemyPatternEditor : Editor
         spawnDelayMax = serializedObject.FindProperty("spawnDelayMax");
 
         nodeInfoFold = new bool[4];     //node max Num;
-        enemyInfoFold = new bool[4];    
-        
-        
+        enemyInfoFold = new bool[4];
+
+
         EnemyPattern enemyPattern = (EnemyPattern)target;
         for (int i = 0; i < enemyPattern.nodeNum; ++i)
         {
@@ -90,11 +90,11 @@ public class EnemyPatternEditor : Editor
         if (enemyPattern.spawnDelayMin > enemyPattern.spawnDelayMax)
             enemyPattern.spawnDelayMin = enemyPattern.spawnDelayMax;
 
-        
+
 
         EditorGUILayout.Space();
-      
-     
+
+
         enemyPatternFold = EditorGUILayout.Foldout(enemyPatternFold, "PatternInfo");
 
         if (enemyPatternFold)
@@ -103,10 +103,10 @@ public class EnemyPatternEditor : Editor
             for (int i = 0; i < enemyPattern.nodeNum; ++i)
             {
                 EditorGUILayout.Space();
-                nodeInfoFold[i] = EditorGUILayout.Foldout(nodeInfoFold[i], " NodeInfo " + (i+1));
+                nodeInfoFold[i] = EditorGUILayout.Foldout(nodeInfoFold[i], " NodeInfo " + (i + 1));
 
 
-                if(nodeInfoFold[i])
+                if (nodeInfoFold[i])
                 {
                     ++EditorGUI.indentLevel;
 
@@ -125,9 +125,9 @@ public class EnemyPatternEditor : Editor
 
 
                     EditorGUILayout.BeginHorizontal();
-                    
 
-                    float _nodeStartDelayValue = EditorGUILayout.FloatField("NodeStartDelay : ",enemyPattern.nodeData[i].nodeStartDelay);
+
+                    float _nodeStartDelayValue = EditorGUILayout.FloatField("NodeStartDelay : ", enemyPattern.nodeData[i].nodeStartDelay);
                     if (_nodeStartDelayValue != enemyPattern.nodeData[i].nodeStartDelay)
                     {
                         if (_nodeStartDelayValue < 0)
@@ -138,7 +138,7 @@ public class EnemyPatternEditor : Editor
                     }
 
                     //EditorGUILayout.LabelField("SpawnEnemyNum : " );//+ enemyPattern.nodeData[i].spawnEnemyNum);
-                    int _spawnEnemyNum = EditorGUILayout.IntField("SpawnEnemyNum : ",enemyPattern.nodeData[i].spawnEnemyNum);
+                    int _spawnEnemyNum = EditorGUILayout.IntField("SpawnEnemyNum : ", enemyPattern.nodeData[i].spawnEnemyNum);
 
                     if (_spawnEnemyNum != enemyPattern.nodeData[i].spawnEnemyNum)
                     {
@@ -151,8 +151,8 @@ public class EnemyPatternEditor : Editor
                     EditorGUILayout.Space();
                     enemyInfoFold[i] = EditorGUILayout.Foldout(enemyInfoFold[i], " EnemyInfo " + (i + 1));
 
-                    
-                    if(enemyInfoFold[i])
+
+                    if (enemyInfoFold[i])
                     {
                         for (int j = 0; j < enemyPattern.nodeData[i].spawnEnemyNum; ++j)
                         {
@@ -161,7 +161,7 @@ public class EnemyPatternEditor : Editor
 
                             ++EditorGUI.indentLevel;
                             EditorStyles.label.fontStyle = FontStyle.Bold;
-                            EditorGUILayout.LabelField("※Enemy " + i + " - " + (j+1));
+                            EditorGUILayout.LabelField("※Enemy " + i + " - " + (j + 1));
                             EditorStyles.label.fontStyle = FontStyle.Normal;
                             ++EditorGUI.indentLevel;
 
@@ -200,14 +200,14 @@ public class EnemyPatternEditor : Editor
                             EditorGUILayout.EndHorizontal();
 
 
-                            EditorGUI.indentLevel-=2;
+                            EditorGUI.indentLevel -= 2;
 
                         }
-                        
+
                     }
 
-                    
-                   
+
+
 
 
                     --EditorGUI.indentLevel;
@@ -230,7 +230,7 @@ public class EnemyPatternEditor : Editor
 
     }
 
-    
+
 
 
 

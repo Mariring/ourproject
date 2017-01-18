@@ -1,23 +1,9 @@
 
-Ch_P_001.png
+Ch_P_Ible_002.png
 size: 1024,128
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-L_1
-  rotate: false
-  xy: 697, 94
-  size: 82, 32
-  orig: 82, 32
-  offset: 0, 0
-  index: -1
-L_2
-  rotate: false
-  xy: 595, 94
-  size: 100, 32
-  orig: 100, 32
-  offset: 0, 0
-  index: -1
 body
   rotate: false
   xy: 102, 28
@@ -55,63 +41,63 @@ head
   index: -1
 leftarm001
   rotate: true
-  xy: 852, 89
+  xy: 797, 89
   size: 37, 58
   orig: 37, 58
   offset: 0, 0
   index: -1
 leftarm002
   rotate: true
-  xy: 968, 97
+  xy: 970, 97
   size: 29, 48
   orig: 29, 48
   offset: 0, 0
   index: -1
 leftarm003
   rotate: false
-  xy: 557, 35
+  xy: 454, 35
   size: 33, 30
   orig: 33, 30
   offset: 0, 0
   index: -1
 leftleg001
   rotate: true
-  xy: 781, 90
+  xy: 726, 90
   size: 36, 69
   orig: 36, 69
   offset: 0, 0
   index: -1
 leftleg002
-  rotate: true
-  xy: 718, 59
+  rotate: false
+  xy: 358, 2
   size: 33, 55
   orig: 33, 55
   offset: 0, 0
   index: -1
 leftleg003
   rotate: false
-  xy: 595, 66
+  xy: 393, 2
   size: 60, 26
   orig: 60, 26
   offset: 0, 0
   index: -1
 rightarm001
-  rotate: false
-  xy: 358, 2
+  rotate: true
+  xy: 913, 91
   size: 35, 55
   orig: 35, 55
   offset: 0, 0
   index: -1
 rightarm002
-  rotate: false
-  xy: 437, 2
+  rotate: true
+  xy: 595, 74
   size: 52, 63
   orig: 52, 63
   offset: 0, 0
   index: -1
 rightarm003
-  rotate: false
-  xy: 395, 30
+  rotate: true
+  xy: 328, 11
   size: 34, 27
   orig: 34, 27
   offset: 0, 0
@@ -125,7 +111,7 @@ rightarm101
   index: -1
 rightarm102
   rotate: true
-  xy: 491, 19
+  xy: 660, 80
   size: 46, 64
   orig: 46, 64
   offset: 0, 0
@@ -146,14 +132,14 @@ rightleg001
   index: -1
 rightleg002
   rotate: true
-  xy: 912, 84
+  xy: 857, 84
   size: 42, 54
   orig: 42, 54
   offset: 0, 0
   index: -1
 rightleg003
   rotate: false
-  xy: 657, 65
+  xy: 393, 30
   size: 59, 27
   orig: 59, 27
   offset: 0, 0
