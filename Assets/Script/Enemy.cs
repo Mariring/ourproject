@@ -27,10 +27,10 @@ public class Enemy : EnemyInfo
     // 2 : 공격
     // 3 : 대기 
 
-	protected void Awake ()
+    protected void Awake()
     {
         base.Awake();
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Enemy"),true);
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Enemy"), true);
 
         //초기화들
         //originHp = Random.Range(1, 4);
@@ -43,21 +43,21 @@ public class Enemy : EnemyInfo
         atkBox = gameObject.GetComponentInChildren<EnemyAttackBox>();
         StartCoroutine(AttackHeroRoutine());
     }
-	
-	// Update is called once per frame
+
+    // Update is called once per frame
     protected void FixedUpdate()
     {
         base.Awake();
 
-        hpSpr.transform.localScale = new Vector3((float)hpSprSize * (float)(nowHp/originHp), 1,1);
-     
+        hpSpr.transform.localScale = new Vector3((float)hpSprSize * (float)(nowHp / originHp), 1, 1);
+
         //죽으면 안 움직여
-        if(isDead)  
+        if (isDead)
         {
             return;
         }
 
-        if (enemyState==0)
+        if (enemyState == 0)
         {
             if (isLeft)
             {
@@ -70,13 +70,13 @@ public class Enemy : EnemyInfo
                 this.transform.position = (Vector2.right * speed * Time.deltaTime) + (Vector2)this.transform.position;
             }
         }
-        
-	}
+
+    }
 
 
     IEnumerator AttackHeroRoutine()
     {
-        while(true)
+        while (true)
         {
 
             if (atkBox.isBoxInHero)
@@ -97,7 +97,7 @@ public class Enemy : EnemyInfo
                     yield return new WaitForSeconds(0.5f);
                     continue;
                 }
-                
+
                 enemyState = 2;
                 AttackHero();
 
@@ -107,11 +107,11 @@ public class Enemy : EnemyInfo
                     yield return new WaitForSeconds(0.5f);
                     continue;
                 }
-  
+
                 enemyState = 3;
 
                 yield return new WaitForSeconds(1f);
-            
+
             }
             else
             {
@@ -120,12 +120,12 @@ public class Enemy : EnemyInfo
 
             yield return new WaitForEndOfFrame();
         }
-       
+
     }
 
     bool CheckAttackableState()
     {
-        if(atkBox.isBoxInHero)
+        if (atkBox.isBoxInHero)
         {
 
             if (atkBox.heroInBox.GetUnbeatableState())
@@ -145,7 +145,7 @@ public class Enemy : EnemyInfo
         if (isDead)
             return;
 
-        if(atkBox.heroInBox!=null)
+        if (atkBox.heroInBox != null)
             atkBox.heroInBox.GetDamage();
 
 
@@ -160,31 +160,25 @@ public class Enemy : EnemyInfo
     {
         Damaged();  //ㄷㅔ미지 받고
         //Debug.Log("size: " + (float)(hpSprSize * (nowHp / originHp)) + ", nowHp/originHp" + (float)(nowHp / originHp));
-        if (_isFinish)
+        if (_isFinish || nowHp <= 0)
         {
 
             isDead = true;  //죽음 표시
             StartCoroutine(FlyingEnemy());  //날라가
-            
-            return true;
-        }
-        else if(nowHp <= 0)
-        {
-            isDead = true;
-            Destroy(this.gameObject);
+
             return true;
         }
 
         return false;
 
-       
+
     }
 
     IEnumerator FlyingEnemy()
     {
         Destroy(this.GetComponent<BoxCollider2D>());
         Destroy(this.GetComponent<Rigidbody2D>());
-        
+
         float yValue = Random.Range(0.5f, 0.9f);
         Vector2 dir = Vector2.zero;
 
@@ -198,34 +192,35 @@ public class Enemy : EnemyInfo
         }
 
         float time = 0;
-        while(true)
+        while (true)
         {
             time += Time.deltaTime;
 
             this.transform.position = (dir * 15f * Time.deltaTime) + (Vector2)this.transform.position;
             yield return null;
 
-            if(time > 3f)
+            if (time > 3f)
             {
                 break;
             }
         }
 
         Destroy(this.gameObject);
-       
+
     }
 
     void OnDestroy()
     {
         atkBox.heroInBox = null;
     }
-    
+
 
     public void SetInitState(EnemyInitState _state)
     {
         Debug.Log("ASD");
         isLeft = !(_state._isLeft);
         originHp = _state._originHp;
+        nowHp = originHp;
         speed = _state._speed;
     }
 
