@@ -59,8 +59,10 @@ namespace Spine.Unity.Examples {
 			StartCoroutine(GunGrabRoutine());
 		}
 
-		void HandleEvent (Spine.TrackEntry trackEntry, Spine.Event e) {
-			if (e.Data.Name == footstepEvent) {
+		void HandleEvent (Spine.TrackEntry trackEntry, Spine.Event e) 
+        {
+			if (e.Data.Name == footstepEvent)
+            {
 				footstepAudioSource.pitch = 0.5f + Random.Range(-0.2f, 0.2f);
 				footstepAudioSource.Play();
 			}

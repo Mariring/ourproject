@@ -48,6 +48,9 @@ TagManager:
   - name: BackGround
     uniqueID: 3459232475
     locked: 0
+  - name: Ring
+    uniqueID: 3772279331
+    locked: 0
   - name: CharacterBack
     uniqueID: 2821512289
     locked: 0

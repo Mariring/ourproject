@@ -648,7 +648,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 16
 --- !u!1 &176737815
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,7 +1090,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1473455007
-  m_SortingOrder: 0
+  m_SortingOrder: -10
   m_Sprite: {fileID: 21300000, guid: d354719ebf6e35041b7de05ac572ef36, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1112,7 +1112,7 @@ Transform:
   - {fileID: 1904661548}
   - {fileID: 1271358120}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 18
 --- !u!1 &281401146
 GameObject:
   m_ObjectHideFlags: 0
@@ -2468,7 +2468,7 @@ Transform:
   - {fileID: 1122246599}
   - {fileID: 847086080}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
 --- !u!1 &611856826
 GameObject:
   m_ObjectHideFlags: 0
@@ -2794,7 +2794,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 17
 --- !u!1 &670392455
 GameObject:
   m_ObjectHideFlags: 0
@@ -5146,9 +5146,10 @@ GameObject:
   - 114: {fileID: 1564298002}
   - 61: {fileID: 1564298006}
   - 114: {fileID: 1564298001}
-  - 50: {fileID: 1564298007}
   - 114: {fileID: 1564298009}
+  - 50: {fileID: 1564298007}
   - 82: {fileID: 1564298008}
+  - 114: {fileID: 1564298010}
   m_Layer: 8
   m_Name: Hero
   m_TagString: Hero
@@ -5255,7 +5256,7 @@ Transform:
   - {fileID: 448777901}
   - {fileID: 289340565}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
 --- !u!61 &1564298006
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5376,6 +5377,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6abb910a64c52c947952c2cabee3edba, type: 3}
   - {fileID: 8300000, guid: 6abb910a64c52c947952c2cabee3edba, type: 3}
   - {fileID: 8300000, guid: 072b027649f259b4199868b1049ebfd0, type: 3}
+--- !u!114 &1564298010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1564298000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 309c1b78e9fd20e44b93a8e6e1388412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1578787220
 GameObject:
   m_ObjectHideFlags: 0
@@ -5737,7 +5749,7 @@ MonoBehaviour:
   leftSpawnPosition: {fileID: 44757074}
   rightSpawnPosition: {fileID: 79950750}
   enemy: {fileID: 1000011465325722, guid: 7e15cb580ec65e146b902925256d184d, type: 2}
-  test: 1
+  test: 0
   testPtNum: 0
 --- !u!1 &1720775905
 GameObject:
@@ -5863,7 +5875,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
 --- !u!1 &1732022378
 GameObject:
   m_ObjectHideFlags: 0
@@ -6016,7 +6028,7 @@ Transform:
   - {fileID: 921120571}
   - {fileID: 100543966}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
 --- !u!1 &1741514392
 GameObject:
   m_ObjectHideFlags: 0
@@ -6313,7 +6325,7 @@ Transform:
   - {fileID: 1127476772}
   - {fileID: 1720775906}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
 --- !u!1 &1777837836
 GameObject:
   m_ObjectHideFlags: 0
@@ -6771,7 +6783,7 @@ Transform:
   - {fileID: 503649944}
   - {fileID: 1968982684}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
 --- !u!1 &1936020988
 GameObject:
   m_ObjectHideFlags: 0
@@ -7455,7 +7467,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
 --- !u!1 &2087988151
 GameObject:
   m_ObjectHideFlags: 0
