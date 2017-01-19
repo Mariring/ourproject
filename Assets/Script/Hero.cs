@@ -34,6 +34,8 @@ public class Hero : MonoBehaviour
 
     [HideInInspector]
     public bool isLeft;
+    [HideInInspector]
+    public bool isRunning;
 
     public float originSpeed;
     float speed;
@@ -56,6 +58,7 @@ public class Hero : MonoBehaviour
         controlable = true;
         movable = true;
         unBeatable = false;
+        isRunning = false;
         comboTime = 0;
         comboNum = 0;
 
@@ -95,9 +98,21 @@ public class Hero : MonoBehaviour
         //뒤집기
         FlipX();
 
+        //상태확인
+        StateCheck();
         
         
 	}
+
+    void StateCheck()
+    {
+        if (ropeState.ropeRidable == false && 
+            ropeState.ropeRiding == false)
+        {
+            isRunning = true;
+        }
+
+    }
 
     //이동
     void Move() 
