@@ -96,8 +96,9 @@ public class HeroControl : Hero
         comboNum += 1;
         comboTime = 0.5f;
 
-   
-        ImmediateSpeedUp();
+
+        AttackMove();
+
 
         if (atkBox.enemyInBox.Count >0)
         {

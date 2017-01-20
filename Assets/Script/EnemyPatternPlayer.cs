@@ -65,7 +65,7 @@ public class EnemyPatternPlayer : MonoBehaviour
 
         nodeDelaying = true;
         spawnsDelaying = false;
-        Resources.Load("Prefabs/EnemyPrefab");
+        Resources.Load("",typeof(EnemyPattern));
         patterns = Resources.FindObjectsOfTypeAll<EnemyPattern>();
     }
 

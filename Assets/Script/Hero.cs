@@ -12,6 +12,19 @@ public struct RopeState
     public GameObject rope;
 }
 
+public enum HeroState
+{
+    Idle,
+    Running,
+    Combo_1,
+    Combo_2,
+    Combo_3,
+    RopeRiding,
+    RopeFlying,
+    FrontHit,
+    BackHit
+}
+
 [DisallowMultipleComponent]
 public class Hero : MonoBehaviour 
 {
@@ -37,6 +50,10 @@ public class Hero : MonoBehaviour
     [HideInInspector]
     public bool isRunning;
 
+    public HeroState hState;
+
+
+
     public float originSpeed;
     float speed;
     int speedLevel;
@@ -55,6 +72,8 @@ public class Hero : MonoBehaviour
 
 	protected void Awake () 
     {
+        hState = HeroState.Running;
+
         controlable = true;
         movable = true;
         unBeatable = false;
@@ -110,6 +129,7 @@ public class Hero : MonoBehaviour
             ropeState.ropeRiding == false)
         {
             isRunning = true;
+            hState = HeroState.Running;
         }
 
     }
@@ -269,7 +289,7 @@ public class Hero : MonoBehaviour
     //적 때리기
     protected void AttackEnemy(GameObject _enemy)
     {
-
+        
         sePlayer.PlaySE(1);
         if(comboNum>2)
         {
@@ -313,13 +333,32 @@ public class Hero : MonoBehaviour
         speed = originSpeed * 3f;
         yield return new WaitForSeconds(0.07f);
         speed = originSpeed;
-        
     }
     
-    //대쉬루틴 실행 함수
-    protected void ImmediateSpeedUp()
+  
+
+    protected void AttackMove()
     {
-        StartCoroutine(ImmediateSpeedUpRoutine());
+        if(comboNum == 1)
+        {
+            StartCoroutine(ImmediateSpeedUpRoutine());
+        }
+        else if( comboNum ==2)
+        {
+            StartCoroutine(ImmediateSpeedUpRoutine());
+        }
+        else if(comboNum==3)
+        {
+            StartCoroutine(ImmediateSpeedUpRoutine());
+        }
+    }
+
+    IEnumerator AttackCheck(float _time) 
+    {
+
+        yield return new WaitForSeconds(_time);
+
+
     }
 
 
@@ -343,7 +382,7 @@ public class Hero : MonoBehaviour
 
 
         sePlayer.PlaySE(0);
-        Handheld.Vibrate();
+        //Handheld.Vibrate();
         cam.ForceZoomShot();
 
         if(ropeState.ropeRiding)
@@ -435,7 +474,7 @@ public class Hero : MonoBehaviour
     }
 
     //움직일 수 없는 루틴
-    IEnumerator CantMoveTime(float _time)
+    protected IEnumerator CantMoveTime(float _time)
     {
         movable = false;
         yield return new WaitForSeconds(_time); 

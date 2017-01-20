@@ -67,18 +67,7 @@ public class HeroAnimation : MonoBehaviour
 
     //}
 
-    public enum HeroState
-    {
-        Idle,
-        Running,
-        Combo_1,
-        Combo_2,
-        Combo_3,
-        RopeRiding,
-        RopeFlying,
-        FrontHit,
-        BackHit
-    }
+
 
     void SetAnimation()
     {

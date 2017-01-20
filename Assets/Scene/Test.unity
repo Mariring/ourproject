@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3735643, g: 0.38112015, b: 0.35887682, a: 1}
+  m_IndirectSpecularColor: {r: 0.44711876, g: 0.49739325, b: 0.57615495, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1655,6 +1655,69 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!1 &395878916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 395878918}
+  - 108: {fileID: 395878917}
+  m_Layer: 0
+  m_Name: Directional light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &395878917
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 395878916}
+  m_Enabled: 1
+  serializedVersion: 7
+  m_Type: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.3
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &395878918
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 395878916}
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 3.9285755, y: 1.4120731, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 20
 --- !u!1 &403137350
 GameObject:
   m_ObjectHideFlags: 0
@@ -2270,9 +2333,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -0.51217234, y: 2.9896624}
+  m_Offset: {x: -1.7021611, y: 2.989663}
   serializedVersion: 2
-  m_Size: {x: 1.6289866, y: 9.325968}
+  m_Size: {x: 4.0089645, y: 9.325968}
 --- !u!212 &527404983
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5286,6 +5349,7 @@ MonoBehaviour:
   backBox: {fileID: 1998557862}
   isLeft: 0
   isRunning: 0
+  hState: 0
   originSpeed: 4
   score: 0
 --- !u!114 &1564298002
@@ -5499,6 +5563,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309c1b78e9fd20e44b93a8e6e1388412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preState: 0
+  newState: 0
 --- !u!1 &1578787220
 GameObject:
   m_ObjectHideFlags: 0
@@ -5860,7 +5926,7 @@ MonoBehaviour:
   leftSpawnPosition: {fileID: 44757074}
   rightSpawnPosition: {fileID: 79950750}
   enemy: {fileID: 1000011465325722, guid: 7e15cb580ec65e146b902925256d184d, type: 2}
-  test: 0
+  test: 1
   testPtNum: 0
 --- !u!1 &1720775905
 GameObject:
@@ -6037,7 +6103,7 @@ MonoBehaviour:
   speed: 20
   zoomSize: 4
   zoomSpeed: 1
-  testMode: 1
+  testMode: 0
 --- !u!1 &1734164105
 GameObject:
   m_ObjectHideFlags: 0
