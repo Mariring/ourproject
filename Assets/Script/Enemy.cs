@@ -217,7 +217,7 @@ public class Enemy : EnemyInfo
 
     public void SetInitState(EnemyInitState _state)
     {
-        Debug.Log("ASD");
+
         isLeft = !(_state._isLeft);
         originHp = _state._originHp;
         nowHp = originHp;

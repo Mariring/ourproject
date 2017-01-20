@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Spine.Unity;
 
 public struct RopeState
 {
@@ -50,7 +51,10 @@ public class Hero : MonoBehaviour
     [HideInInspector]
     public bool isRunning;
 
+    [HideInInspector]
+    bool isPlayingAtkAni;
     public HeroState hState;
+    
 
 
 
@@ -78,6 +82,9 @@ public class Hero : MonoBehaviour
         movable = true;
         unBeatable = false;
         isRunning = false;
+        isPlayingAtkAni = false;
+
+
         comboTime = 0;
         comboNum = 0;
 
@@ -125,12 +132,26 @@ public class Hero : MonoBehaviour
 
     void StateCheck()
     {
-        if (ropeState.ropeRidable == false && 
-            ropeState.ropeRiding == false)
+        if (isPlayingAtkAni)
+            return;
+
+
+        if(ropeState.ropeRiding)
         {
-            isRunning = true;
-            hState = HeroState.Running;
+            hState = HeroState.RopeRiding;
+            return;
         }
+
+        if(ropeState.isRopeShooting)
+        {
+            hState = HeroState.RopeFlying;
+            return;
+        }
+
+
+        isRunning = true;
+        hState = HeroState.Running;
+
 
     }
 
@@ -286,6 +307,22 @@ public class Hero : MonoBehaviour
         isLeft = _isLeft;
     }
 
+
+    public void EnemyAttackCheckEvent(Spine.TrackEntry trackEntry, Spine.Event e)
+    {
+
+        if(e.data.name =="attack")
+        {
+            Debug.Log("ASD");
+            if (atkBox.enemyInBox.Count > 0)
+            {
+                AttackEnemy(atkBox.enemyInBox[Random.Range(0, atkBox.enemyInBox.Count)]);
+            }
+        }
+        
+    }
+                
+
     //적 때리기
     protected void AttackEnemy(GameObject _enemy)
     {
@@ -351,12 +388,34 @@ public class Hero : MonoBehaviour
         {
             StartCoroutine(ImmediateSpeedUpRoutine());
         }
+
+        StartCoroutine(AttackCheckRoutine());
+
     }
 
-    IEnumerator AttackCheck(float _time) 
+    IEnumerator AttackCheckRoutine() 
     {
+        float _time = 0;
+        isPlayingAtkAni = true;
+        switch(comboNum)
+        {
+            case 1:
+                hState = HeroState.Combo_1;
+                _time = 0.6f;
+                break;
+
+            case 2:
+                hState = HeroState.Combo_2;
+                break;
+
+            case 3:
+                hState = HeroState.Combo_3;
+                break;
+
+        }
 
         yield return new WaitForSeconds(_time);
+        isPlayingAtkAni = false;
 
 
     }
@@ -391,6 +450,7 @@ public class Hero : MonoBehaviour
             ropeState.ropeRiding = false;
             this.transform.localEulerAngles = new Vector3(0, 0, 0);
         }
+
         StartCoroutine(UnbeatableTime());
         StartCoroutine(CantMoveTime(0.5f));
         StartCoroutine(KnockbackTime(0.5f));
@@ -495,7 +555,7 @@ public class Hero : MonoBehaviour
     //콤보탈진
     protected void ComboExhaust()
     {
-        StartCoroutine(CantControlTime(0.5f));
+        StartCoroutine(CantControlTime(2f));
     }
 
     //게임 오버
@@ -541,7 +601,6 @@ public class Hero : MonoBehaviour
     //로프 탄다
     protected void RopeRide()
     {
-
         ropeState.ropeRiding = true;
         ropeState.ropeTime = 0;
 

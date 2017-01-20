@@ -10,12 +10,15 @@ public class EnemyPatternPlayer : MonoBehaviour
     #region MemberVariable
 
     //패턴들
+    Object[] ptObject;
     EnemyPattern[] patterns;
 
     //선택된 패턴
     EnemyPattern selectedPt;
     //선택된 노드
     EnemyPatternNode selectedNode;
+
+
 
     //스폰타이머
     float enemySpawnDelayTimer;
@@ -65,8 +68,18 @@ public class EnemyPatternPlayer : MonoBehaviour
 
         nodeDelaying = true;
         spawnsDelaying = false;
-        Resources.Load("",typeof(EnemyPattern));
-        patterns = Resources.FindObjectsOfTypeAll<EnemyPattern>();
+
+        ptObject = Resources.LoadAll("Prefabs/EnemyPrefab");
+
+        patterns = new EnemyPattern[ptObject.Length];
+
+        for(int i=0;i<patterns.Length;++i)
+        {
+            GameObject ptObj = (GameObject)ptObject[i];
+            patterns[i] = ptObj.GetComponent<EnemyPattern>();
+        }
+
+
     }
 
 

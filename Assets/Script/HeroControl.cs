@@ -94,16 +94,12 @@ public class HeroControl : Hero
         }
 
         comboNum += 1;
-        comboTime = 0.5f;
+        comboTime = 1f;
 
 
         AttackMove();
 
 
-        if (atkBox.enemyInBox.Count >0)
-        {
-            AttackEnemy(atkBox.enemyInBox[Random.Range(0,atkBox.enemyInBox.Count)]);
-        }
 
 
         if (comboNum == 3)

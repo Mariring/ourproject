@@ -449,6 +449,8 @@ MonoBehaviour:
   atkBox: {fileID: 114000012461878608}
   backBox: {fileID: 114000013529606856}
   isLeft: 0
+  isRunning: 0
+  hState: 0
   originSpeed: 4
   score: 0
 --- !u!114 &114000012461878608
