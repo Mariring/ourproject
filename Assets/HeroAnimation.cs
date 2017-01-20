@@ -9,23 +9,27 @@ public class HeroAnimation : MonoBehaviour
     Hero hero;
     SkeletonAnimation ani;
 
-    public HeroState preState;
+    HeroState preState;
+    
     public HeroState newState;
 
 
-    string idleAniName = "able";
-    string runAniName = "run";
-    string ropeRidingAniName = "rope";
-    string ropeFlyingAniName = "dropkick";
-    string oneComAniName = "attack";
+    public string idleAniName = "able";
+    public string runAniName = "run";
+    public string ropeRidingAniName = "rope";
+    public string ropeFlyingAniName = "dropkick";
+    public string oneComAniName = "attack";
+    public string twoComAniName;
+    public string threeComAniName;
+    public string frontHitAniName;
+    public string backHitAniName;
 
 
-	void Awake () 
+	void Start () 
     {
         ani = this.GetComponent<SkeletonAnimation>();
         hero = this.GetComponent<Hero>();
 
-        //ani.AnimationName = "rope";
 
         ani.state.Event += hero.EnemyAttackCheckEvent;
 	}
@@ -75,6 +79,17 @@ public class HeroAnimation : MonoBehaviour
                 ani.timeScale = 2;
                 break;
 
+            case HeroState.Combo_2:
+                ani.state.SetAnimation(0, twoComAniName, true);
+                ani.timeScale = 2;
+                break;
+
+
+            case HeroState.Combo_3:
+                ani.state.SetAnimation(0, threeComAniName, true);
+                ani.timeScale = 1;
+                break;
+
             case HeroState.RopeRiding:
                 ani.state.SetAnimation(0,ropeRidingAniName,true);
                 ani.timeScale =1;
@@ -84,6 +99,7 @@ public class HeroAnimation : MonoBehaviour
                 ani.state.SetAnimation(0, ropeFlyingAniName, true);
                 ani.timeScale = 1;
                 break;
+
         }
     }
 }

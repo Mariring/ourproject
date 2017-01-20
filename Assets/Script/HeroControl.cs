@@ -86,6 +86,10 @@ public class HeroControl : Hero
             return;
         }
 
+        if (isPlayingAtkAni)    //애니메이션 진행중이면 X
+            return;
+
+
         if (comboNum == 3)
         {
             sePlayer.PlaySE(2);
@@ -94,7 +98,7 @@ public class HeroControl : Hero
         }
 
         comboNum += 1;
-        comboTime = 1f;
+        comboTime = 0.8f;
 
 
         AttackMove();

@@ -52,7 +52,7 @@ public class Hero : MonoBehaviour
     public bool isRunning;
 
     [HideInInspector]
-    bool isPlayingAtkAni;
+    protected bool isPlayingAtkAni;
     public HeroState hState;
     
 
@@ -313,7 +313,6 @@ public class Hero : MonoBehaviour
 
         if(e.data.name =="attack")
         {
-            Debug.Log("ASD");
             if (atkBox.enemyInBox.Count > 0)
             {
                 AttackEnemy(atkBox.enemyInBox[Random.Range(0, atkBox.enemyInBox.Count)]);
@@ -406,10 +405,12 @@ public class Hero : MonoBehaviour
 
             case 2:
                 hState = HeroState.Combo_2;
+                _time = 0.6f;
                 break;
 
             case 3:
                 hState = HeroState.Combo_3;
+                _time = 1.3f;
                 break;
 
         }
