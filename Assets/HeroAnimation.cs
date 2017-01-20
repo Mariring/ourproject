@@ -87,7 +87,7 @@ public class HeroAnimation : MonoBehaviour
 
             case HeroState.Combo_3:
                 ani.state.SetAnimation(0, threeComAniName, true);
-                ani.timeScale = 1;
+                ani.timeScale = 2;
                 break;
 
             case HeroState.RopeRiding:
@@ -99,6 +99,12 @@ public class HeroAnimation : MonoBehaviour
                 ani.state.SetAnimation(0, ropeFlyingAniName, true);
                 ani.timeScale = 1;
                 break;
+
+            case HeroState.FrontHit:
+                ani.state.SetAnimation(0, frontHitAniName, true);
+                ani.timeScale = 0.85f;
+                break;
+
 
         }
     }

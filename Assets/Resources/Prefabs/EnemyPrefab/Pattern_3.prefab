@@ -21,7 +21,7 @@ GameObject:
   - 4: {fileID: 4000013043395078}
   - 114: {fileID: 114000012918808586}
   m_Layer: 0
-  m_Name: Pattern_3
+  m_Name: Pattern_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,55 +53,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeNum: 1
   nodeData:
-  - nodeStartDelay: 0
-    spawnEnemyNum: 11
+  - nodeStartDelay: 2
+    spawnEnemyNum: 4
     spawnEnemey:
-    - _isLeft: 0
-      _speed: 8
-      _originHp: 4
     - _isLeft: 1
       _speed: 3
-      _originHp: 4
-    - _isLeft: 0
-      _speed: 8
-      _originHp: 4
+      _originHp: 1
     - _isLeft: 1
-      _speed: 8
-      _originHp: 4
-    - _isLeft: 0
-      _speed: 8
-      _originHp: 4
+      _speed: 3
+      _originHp: 1
     - _isLeft: 1
-      _speed: 8
-      _originHp: 4
+      _speed: 3
+      _originHp: 1
     - _isLeft: 1
-      _speed: 8
-      _originHp: 4
-    - _isLeft: 1
-      _speed: 8
-      _originHp: 4
-    - _isLeft: 1
-      _speed: 8
-      _originHp: 4
-    - _isLeft: 1
-      _speed: 8
-      _originHp: 4
-    - _isLeft: 1
-      _speed: 8
-      _originHp: 4
-    spawnDirLeft: 0101010101010101010101
+      _speed: 1
+      _originHp: 2
+    spawnDirLeft: 01010101
     spawnDelay:
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
+    - 1
+    - 1
+    - 1
+    - 1
     asd: 
   spawnDelayMin: 0
   spawnDelayMax: 10

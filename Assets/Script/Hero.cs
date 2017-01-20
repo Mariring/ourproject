@@ -132,6 +132,12 @@ public class Hero : MonoBehaviour
 
     void StateCheck()
     {
+        //if(unBeatable && !movable)
+        //{
+        //    hState = HeroState.FrontHit;
+        //    return;
+        //}
+
         if (isPlayingAtkAni)
             return;
 
@@ -313,9 +319,18 @@ public class Hero : MonoBehaviour
 
         if(e.data.name =="attack")
         {
+            
             if (atkBox.enemyInBox.Count > 0)
             {
-                AttackEnemy(atkBox.enemyInBox[Random.Range(0, atkBox.enemyInBox.Count)]);
+                if (comboNum == 3)
+                {
+                    for (int i = 0; i < atkBox.enemyInBox.Count;++i ) 
+                    {
+                        AttackEnemy(atkBox.enemyInBox[i]);
+                    }
+                }
+                else
+                    AttackEnemy(atkBox.enemyInBox[Random.Range(0, atkBox.enemyInBox.Count)]);
             }
         }
         
@@ -401,16 +416,18 @@ public class Hero : MonoBehaviour
             case 1:
                 hState = HeroState.Combo_1;
                 _time = 0.6f;
+                StartCoroutine(CantMoveTime(_time));
                 break;
 
             case 2:
                 hState = HeroState.Combo_2;
                 _time = 0.6f;
+                StartCoroutine(CantMoveTime(_time));
                 break;
 
             case 3:
                 hState = HeroState.Combo_3;
-                _time = 1.3f;
+                _time = 0.6f;
                 break;
 
         }
@@ -452,6 +469,7 @@ public class Hero : MonoBehaviour
             this.transform.localEulerAngles = new Vector3(0, 0, 0);
         }
 
+
         StartCoroutine(UnbeatableTime());
         StartCoroutine(CantMoveTime(0.5f));
         StartCoroutine(KnockbackTime(0.5f));
@@ -485,28 +503,30 @@ public class Hero : MonoBehaviour
     {
 
         unBeatable = true;
+        //hState = HeroState.FrontHit;
+
+        yield return new WaitForSeconds(1f);
+
+        //if (this.GetComponent<SpriteRenderer>() != null)
+        //{
+
+        //    for (int i = 0; i < 6; ++i)
+        //    {
+        //        if (i % 2 == 0)
+        //        {
+        //            this.GetComponent<SpriteRenderer>().color = new Color(this.GetComponent<SpriteRenderer>().color.r, this.GetComponent<SpriteRenderer>().color.g, this.GetComponent<SpriteRenderer>().color.b, 0.5f);
+        //        }
+        //        else
+        //        {
+        //            this.GetComponent<SpriteRenderer>().color = new Color(this.GetComponent<SpriteRenderer>().color.r, this.GetComponent<SpriteRenderer>().color.g, this.GetComponent<SpriteRenderer>().color.b, 1);
+        //        }
+
+        //        yield return new WaitForSeconds(0.1f);
+        //    }
 
 
-        if (this.GetComponent<SpriteRenderer>() != null)
-        {
 
-            for (int i = 0; i < 6; ++i)
-            {
-                if (i % 2 == 0)
-                {
-                    this.GetComponent<SpriteRenderer>().color = new Color(this.GetComponent<SpriteRenderer>().color.r, this.GetComponent<SpriteRenderer>().color.g, this.GetComponent<SpriteRenderer>().color.b, 0.5f);
-                }
-                else
-                {
-                    this.GetComponent<SpriteRenderer>().color = new Color(this.GetComponent<SpriteRenderer>().color.r, this.GetComponent<SpriteRenderer>().color.g, this.GetComponent<SpriteRenderer>().color.b, 1);
-                }
-
-                yield return new WaitForSeconds(0.1f);
-            }
-
-
-
-        }
+        //}
    
         unBeatable = false;
   
@@ -556,7 +576,7 @@ public class Hero : MonoBehaviour
     //콤보탈진
     protected void ComboExhaust()
     {
-        StartCoroutine(CantControlTime(2f));
+        StartCoroutine(CantControlTime(1f));
     }
 
     //게임 오버

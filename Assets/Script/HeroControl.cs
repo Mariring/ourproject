@@ -105,7 +105,6 @@ public class HeroControl : Hero
 
 
 
-
         if (comboNum == 3)
         {
             ComboExhaust();

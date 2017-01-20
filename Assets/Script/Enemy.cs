@@ -160,7 +160,7 @@ public class Enemy : EnemyInfo
     {
         Damaged();  //ㄷㅔ미지 받고
         //Debug.Log("size: " + (float)(hpSprSize * (nowHp / originHp)) + ", nowHp/originHp" + (float)(nowHp / originHp));
-        if (_isFinish || nowHp <= 0)
+        if (_isFinish)
         {
 
             isDead = true;  //죽음 표시
@@ -168,6 +168,13 @@ public class Enemy : EnemyInfo
 
             return true;
         }
+        else if(nowHp <=0)
+        {
+            isDead = true;
+            Destroy(this.gameObject);
+            return true;
+        }
+
 
         return false;
 

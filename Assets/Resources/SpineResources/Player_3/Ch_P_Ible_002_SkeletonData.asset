@@ -15,8 +15,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e9106a2205c08c34ba72556ee88ce381, type: 2}
   scale: 0.01
   skeletonJSON: {fileID: 4900000, guid: ce04d8e2a9fb4a4489961aa548764549, type: 3}
-  fromAnimation: []
-  toAnimation: []
-  duration: []
+  fromAnimation:
+  - rope
+  toAnimation:
+  - ropeflying
+  duration:
+  - 0
   defaultMix: 0.2
   controller: {fileID: 0}
