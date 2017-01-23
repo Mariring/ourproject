@@ -21,7 +21,7 @@ GameObject:
   - 4: {fileID: 4000013043395078}
   - 114: {fileID: 114000012918808586}
   m_Layer: 0
-  m_Name: Pattern_2
+  m_Name: Pattern_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,5 +75,13 @@ MonoBehaviour:
     - 1
     - 1
     asd: 
+  patternSettingFold: 0
   spawnDelayMin: 0
   spawnDelayMax: 10
+  enemyHpMin: 1
+  enemyHpMax: 50
+  enemySpeedMin: 1
+  enemySpeedMax: 30
+  enemyPatternFold: 0
+  nodeInfoFold: 01000000
+  enemyInfoFold: 01000000

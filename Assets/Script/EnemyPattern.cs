@@ -17,12 +17,31 @@ public class EnemyPattern : MonoBehaviour
     [SerializeField]
     public EnemyPatternNode[] nodeData = new EnemyPatternNode[1];
 
+
+    [SerializeField]
+    public bool patternSettingFold = false;
     [SerializeField]
     public float spawnDelayMin =0f;
-
     [SerializeField]
     public float spawnDelayMax = 100f;
+    [SerializeField]
+    public int enemyHpMin = 1;
+    [SerializeField]
+    public int enemyHpMax = 50;
+    [SerializeField]
+    public float enemySpeedMin = 1f;
+    [SerializeField]
+    public float enemySpeedMax = 30f;
 
+
+    #region EditorVariable;
+    //에디터 코드 안에서 쓰고싶은데 어떻게 하지 ㅠ
+
+    public bool enemyPatternFold =true;  //에디터 폴더 
+    public bool[] nodeInfoFold = new bool[4];
+    public bool[] enemyInfoFold = new bool[4];
+
+    #endregion
 
 
     public void AddNodeNum()

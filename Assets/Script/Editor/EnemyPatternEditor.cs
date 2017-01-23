@@ -12,11 +12,16 @@ public class EnemyPatternEditor : Editor
     SerializedProperty spawnDelayMin;
     SerializedProperty spawnDelayMax;
 
-    private bool enemyPatternFold = false;
 
     EnemyPatternNode[] _enemyPatternNodes;
-    private bool[] nodeInfoFold;
-    private bool[] enemyInfoFold;
+
+
+    SerializedProperty enemyPatternFold;
+    SerializedProperty nodeInfoFold;
+    SerializedProperty enemyInfoFold;
+
+
+
 
 
     //int _noteNum;
@@ -29,8 +34,10 @@ public class EnemyPatternEditor : Editor
         spawnDelayMin = serializedObject.FindProperty("spawnDelayMin");
         spawnDelayMax = serializedObject.FindProperty("spawnDelayMax");
 
-        nodeInfoFold = new bool[4];     //node max Num;
-        enemyInfoFold = new bool[4];
+        enemyInfoFold = serializedObject.FindProperty("enemyInfoFold");
+        nodeInfoFold = serializedObject.FindProperty("nodeInfoFold");
+        enemyInfoFold = serializedObject.FindProperty("enemyInfoFold");
+
 
 
         EnemyPattern enemyPattern = (EnemyPattern)target;
@@ -39,7 +46,7 @@ public class EnemyPatternEditor : Editor
 
         }
 
-        //_enemyPattern = new EnemyPattern[1];    //  enemyPattern minimum 
+
     }
 
 
@@ -55,68 +62,101 @@ public class EnemyPatternEditor : Editor
 
         EditorGUILayout.Space();
 
+
+        #region PatternMinMaxSetting
+
+        enemyPattern.patternSettingFold = EditorGUILayout.Foldout(enemyPattern.patternSettingFold, "Pattern Setting");
+        if (enemyPattern.patternSettingFold)
+        {
+
+            ++EditorGUI.indentLevel;
+            EditorGUILayout.LabelField("SpawnDelay MinMax Setting", EditorStyles.boldLabel);
+            EditorGUILayout.MinMaxSlider(ref enemyPattern.spawnDelayMin, ref enemyPattern.spawnDelayMax, 0f, 50f);
+            EditorGUILayout.BeginHorizontal();
+            enemyPattern.spawnDelayMin = EditorGUILayout.FloatField(enemyPattern.spawnDelayMin);
+            enemyPattern.spawnDelayMax = EditorGUILayout.FloatField(enemyPattern.spawnDelayMax);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Hp MinMax Setting", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            enemyPattern.enemyHpMin = EditorGUILayout.IntField(enemyPattern.enemyHpMin);
+            enemyPattern.enemyHpMax = EditorGUILayout.IntField(enemyPattern.enemyHpMax);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Speed MinMax Setting", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            enemyPattern.enemySpeedMin = EditorGUILayout.FloatField(enemyPattern.enemySpeedMin);
+            enemyPattern.enemySpeedMax = EditorGUILayout.FloatField(enemyPattern.enemySpeedMax);
+            EditorGUILayout.EndHorizontal();
+
+
+            --EditorGUI.indentLevel;
+         
+        }
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        #endregion
+
+
+        #region NodeSetting
+
+        EditorGUILayout.LabelField("Node Setting", EditorStyles.boldLabel);
+
         EditorGUILayout.BeginHorizontal();
 
         //노트 추가 버튼
-        if (GUILayout.Button("AddNode") == true)
+        if (GUILayout.Button("노드 추가") == true)
         {
             enemyPattern.AddNodeNum();
         }
 
         //노드 지우기 버튼
-        if (GUILayout.Button("ReduceNode") == true)
+        if (GUILayout.Button("노드 제거") == true)
         {
             enemyPattern.ReduceNodeNum();
         }
 
         EditorGUILayout.EndHorizontal();
 
-        EditorGUILayout.Space();
-
 
         //NodeNum 라벨
-        EditorGUILayout.LabelField("NodeNum : " + enemyPattern.nodeNum);
+        EditorGUILayout.LabelField("Node Count : " + enemyPattern.nodeNum);
 
 
         EditorGUILayout.Space();
 
-        EditorGUILayout.PropertyField(spawnDelayMin);
-        EditorGUILayout.PropertyField(spawnDelayMax);
-
-        if (enemyPattern.spawnDelayMin < 0)
-            enemyPattern.spawnDelayMin = 0;
-        if (enemyPattern.spawnDelayMax < 0)
-            enemyPattern.spawnDelayMax = 0;
-        if (enemyPattern.spawnDelayMin > enemyPattern.spawnDelayMax)
-            enemyPattern.spawnDelayMin = enemyPattern.spawnDelayMax;
+        #endregion
 
 
+        enemyPattern.enemyPatternFold = EditorGUILayout.Foldout(enemyPattern.enemyPatternFold, "Pattern Info");
 
-        EditorGUILayout.Space();
+        //enemyPatternFold = EditorGUILayout.Foldout(enemyPatternFold, "PatternInfo");
 
-
-        enemyPatternFold = EditorGUILayout.Foldout(enemyPatternFold, "PatternInfo");
-
-        if (enemyPatternFold)
+        if (enemyPattern.enemyPatternFold)
         {
             ++EditorGUI.indentLevel;
             for (int i = 0; i < enemyPattern.nodeNum; ++i)
             {
                 EditorGUILayout.Space();
-                nodeInfoFold[i] = EditorGUILayout.Foldout(nodeInfoFold[i], " NodeInfo " + (i + 1));
+                enemyPattern.nodeInfoFold[i] = EditorGUILayout.Foldout(enemyPattern.nodeInfoFold[i], " Node Info " + (i + 1));
 
 
-                if (nodeInfoFold[i])
+                if (enemyPattern.nodeInfoFold[i])
                 {
                     ++EditorGUI.indentLevel;
 
                     EditorGUILayout.BeginHorizontal();
 
-                    if (GUILayout.Button("AddSpawnEnemy") == true)
+                    if (GUILayout.Button("적 하나 추가") == true)
                     {
                         enemyPattern.nodeData[i].AddEnemyNum();
                     }
-                    if (GUILayout.Button("ReduceSpawnEnemy") == true)
+                    if (GUILayout.Button("적 하나 제거") == true)
                     {
                         enemyPattern.nodeData[i].ReduceEnemyNum();
                     }
@@ -127,7 +167,7 @@ public class EnemyPatternEditor : Editor
                     EditorGUILayout.BeginHorizontal();
 
 
-                    float _nodeStartDelayValue = EditorGUILayout.FloatField("NodeStartDelay : ", enemyPattern.nodeData[i].nodeStartDelay);
+                    float _nodeStartDelayValue = EditorGUILayout.FloatField("노드 시작 딜레이 : ", enemyPattern.nodeData[i].nodeStartDelay);
                     if (_nodeStartDelayValue != enemyPattern.nodeData[i].nodeStartDelay)
                     {
                         if (_nodeStartDelayValue < 0)
@@ -137,22 +177,26 @@ public class EnemyPatternEditor : Editor
                         enemyPattern.nodeData[i].nodeStartDelay = _nodeStartDelayValue;
                     }
 
-                    //EditorGUILayout.LabelField("SpawnEnemyNum : " );//+ enemyPattern.nodeData[i].spawnEnemyNum);
-                    int _spawnEnemyNum = EditorGUILayout.IntField("SpawnEnemyNum : ", enemyPattern.nodeData[i].spawnEnemyNum);
+                    int _spawnEnemyNum = EditorGUILayout.IntField("나오는 적 수 : ", enemyPattern.nodeData[i].spawnEnemyNum);
 
+                    if(_spawnEnemyNum<=0)
+                    {
+                        _spawnEnemyNum = 1;
+                    }
                     if (_spawnEnemyNum != enemyPattern.nodeData[i].spawnEnemyNum)
                     {
                         enemyPattern.nodeData[i].ChangeEnemyNum(_spawnEnemyNum);
                     }
-                    //int _spawnEnemyNum = EditorGUILayout.IntSlider("SpawnEnemyNum",0,30,)
+
+
                     EditorGUILayout.EndHorizontal();
 
 
                     EditorGUILayout.Space();
-                    enemyInfoFold[i] = EditorGUILayout.Foldout(enemyInfoFold[i], " EnemyInfo " + (i + 1));
+                    enemyPattern.enemyInfoFold[i] = EditorGUILayout.Foldout(enemyPattern.enemyInfoFold[i], " 적 정보 " + (i + 1));
 
 
-                    if (enemyInfoFold[i])
+                    if (enemyPattern.enemyInfoFold[i])
                     {
                         for (int j = 0; j < enemyPattern.nodeData[i].spawnEnemyNum; ++j)
                         {
@@ -166,8 +210,8 @@ public class EnemyPatternEditor : Editor
                             ++EditorGUI.indentLevel;
 
                             EditorGUILayout.BeginHorizontal();
-                            EditorGUILayout.LabelField("SpawnDirect: ");
-                            bool _isLeft = GUILayout.Toggle(enemyPattern.nodeData[i].spawnDirLeft[j], " IsLeft");
+                            EditorGUILayout.LabelField("스폰 방향: ");
+                            bool _isLeft = GUILayout.Toggle(enemyPattern.nodeData[i].spawnDirLeft[j], " 왼쪽");
                             if (_isLeft != enemyPattern.nodeData[i].spawnDirLeft[j])
                             {
                                 enemyPattern.nodeData[i].spawnDirLeft[j] = _isLeft;
@@ -177,7 +221,7 @@ public class EnemyPatternEditor : Editor
 
 
                             EditorGUILayout.BeginHorizontal();
-                            EditorGUILayout.LabelField("SpawnDelay: ");
+                            EditorGUILayout.LabelField("스폰 딜레이: ");
                             float _spawnDelay = EditorGUILayout.Slider(enemyPattern.nodeData[i].spawnDelay[j], enemyPattern.spawnDelayMin, enemyPattern.spawnDelayMax);
                             if (_spawnDelay != enemyPattern.nodeData[i].spawnDelay[j])
                                 enemyPattern.nodeData[i].spawnDelay[j] = _spawnDelay;
@@ -185,16 +229,16 @@ public class EnemyPatternEditor : Editor
 
 
                             EditorGUILayout.BeginHorizontal();
-                            EditorGUILayout.LabelField("Speed: ");
-                            float _speed = EditorGUILayout.Slider(enemyPattern.nodeData[i].spawnEnemey[j]._speed, 0f, 100f);
+                            EditorGUILayout.LabelField("적 속도: ");
+                            float _speed = EditorGUILayout.Slider(enemyPattern.nodeData[i].spawnEnemey[j]._speed, enemyPattern.enemySpeedMin, enemyPattern.enemySpeedMax);
                             if (_speed != enemyPattern.nodeData[i].spawnEnemey[j]._speed)
                                 enemyPattern.nodeData[i].spawnEnemey[j]._speed = _speed;
                             EditorGUILayout.EndHorizontal();
 
 
                             EditorGUILayout.BeginHorizontal();
-                            EditorGUILayout.LabelField("HP: ");
-                            int _hp = EditorGUILayout.IntSlider((int)enemyPattern.nodeData[i].spawnEnemey[j]._originHp, 0, 100);
+                            EditorGUILayout.LabelField("적 체력: ");
+                            int _hp = EditorGUILayout.IntSlider((int)enemyPattern.nodeData[i].spawnEnemey[j]._originHp, enemyPattern.enemyHpMin, enemyPattern.enemyHpMax);
                             if (_hp != enemyPattern.nodeData[i].spawnEnemey[j]._originHp)
                                 enemyPattern.nodeData[i].spawnEnemey[j]._originHp = _hp;
                             EditorGUILayout.EndHorizontal();

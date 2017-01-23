@@ -132,11 +132,6 @@ public class Hero : MonoBehaviour
 
     void StateCheck()
     {
-        //if(unBeatable && !movable)
-        //{
-        //    hState = HeroState.FrontHit;
-        //    return;
-        //}
 
         if (isPlayingAtkAni)
             return;
