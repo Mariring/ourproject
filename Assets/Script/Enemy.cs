@@ -1,47 +1,77 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Mariring;
 
 
 [System.Serializable]
 public class Enemy : EnemyInfo
 {
-
+    
     public bool isLeft;
     public float speed;
     public float atkReadyTime;
     public GameObject hpSpr;
 
-    public float nowHp;
-    public float originHp;
-    float hpSprSize;
+    Wall[] walls;
+    protected Hero hero;
 
+    protected float nowHp;
+    public float originHp;
+
+    protected float hpSprSize;
+
+  
 
     [HideInInspector]
     public bool isDead;
+    protected bool isMove;
+    protected bool isKnockBacking;
+    protected bool hitHero;
 
-    EnemyAttackBox atkBox;
+    protected EnemyAttackBox atkBox;
 
-    protected int enemyState;
-    // 0 : 일반
-    // 1 : 공격준비
-    // 2 : 공격
-    // 3 : 대기 
+
+    //protected int enemyState;
+    public EnemyState eState;
+    /*
+     * 
+     * 0 :  달려오기
+     * 1 :  달려오며 공격 준비
+     * 2 :  서서 공격준비
+     * 3 :  공격
+     * 4 :  대기
+     * 5 :  죽음
+     * 6 :  날아감
+     * 
+     */
+
+    protected float attackCoolTime;
+
+
 
     protected void Awake()
     {
         base.Awake();
+
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Enemy"), true);
+        walls = GameObject.FindObjectsOfType<Wall>();
+        hero = GameObject.Find("Hero").GetComponent<Hero>();
 
         //초기화들
         //originHp = Random.Range(1, 4);
-        //nowHp = originHp;
+        //nowHp = originHp; 
         hpSprSize = hpSpr.transform.localScale.x;
 
         isDead = false;
-        enemyState = 0;
+        isMove = true;
+        hitHero = false;
+
+        attackCoolTime = 0f;
 
         atkBox = gameObject.GetComponentInChildren<EnemyAttackBox>();
-        StartCoroutine(AttackHeroRoutine());
+
+        //StartCoroutine(AttackHeroRoutine());
+
     }
 
     // Update is called once per frame
@@ -53,12 +83,40 @@ public class Enemy : EnemyInfo
 
         //죽으면 안 움직여
         if (isDead)
+            return;
+       
+
+    }
+
+    protected void Update()
+    {
+
+        WallCheck();
+
+
+        //죽으면 안 움직여
+        if (isDead)
         {
             return;
         }
 
-        if (enemyState == 0)
+
+        if (attackCoolTime> 0)
         {
+            attackCoolTime -= Time.deltaTime;
+        }
+
+
+        if(!isMove)
+        {
+            return;
+        }
+
+        if (eState == EnemyState.Running || eState == EnemyState.RunningReady)
+        {
+            if (atkBox.isBoxInHero)
+                return;
+
             if (isLeft)
             {
                 this.gameObject.transform.localScale = new Vector3(-1f, 1f, 1f);
@@ -74,73 +132,9 @@ public class Enemy : EnemyInfo
     }
 
 
-    IEnumerator AttackHeroRoutine()
-    {
-        while (true)
-        {
-
-            if (atkBox.isBoxInHero)
-            {
-
-                yield return new WaitForSeconds(0.5f);
-                if (!CheckAttackableState())
-                {
-                    yield return new WaitForSeconds(0.5f);
-                    continue;
-                }
-
-                enemyState = 1;
-
-                yield return new WaitForSeconds(atkReadyTime);
-                if (!CheckAttackableState())
-                {
-                    yield return new WaitForSeconds(0.5f);
-                    continue;
-                }
-
-                enemyState = 2;
-                AttackHero();
-
-                yield return new WaitForSeconds(0.1f);
-                if (!CheckAttackableState())
-                {
-                    yield return new WaitForSeconds(0.5f);
-                    continue;
-                }
-
-                enemyState = 3;
-
-                yield return new WaitForSeconds(1f);
-
-            }
-            else
-            {
-                enemyState = 0;
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
-
-    }
-
-    bool CheckAttackableState()
-    {
-        if (atkBox.isBoxInHero)
-        {
-
-            if (atkBox.heroInBox.GetUnbeatableState())
-            {
-                enemyState = 3;
-                return false;
-            }
-        }
 
 
-        return true;
-    }
-
-
-    void AttackHero()
+    protected void AttackHero()
     {
         if (isDead)
             return;
@@ -154,15 +148,16 @@ public class Enemy : EnemyInfo
     public void Damaged()
     {
         nowHp -= 1;
+        isKnockBacking = false;
     }
 
-    public bool EnemyDeath(bool _isFinish)  //죽으면 true
+    public bool EnemyDeathCheck(bool _isFinish)  //죽으면 true
     {
         Damaged();  //ㄷㅔ미지 받고
-        //Debug.Log("size: " + (float)(hpSprSize * (nowHp / originHp)) + ", nowHp/originHp" + (float)(nowHp / originHp));
+
+
         if (_isFinish)
         {
-
             isDead = true;  //죽음 표시
             StartCoroutine(FlyingEnemy());  //날라가
 
@@ -181,6 +176,44 @@ public class Enemy : EnemyInfo
 
     }
 
+
+    #region Routine
+
+
+    IEnumerator KnockBackRoutine(Vector2 _target,bool _heroLeft)
+    {
+
+        if (_heroLeft)
+            _target.x = _target.x - Random.Range(2f, 3f);
+        else
+            _target.x = _target.x + Random.Range(2f, 3f);
+
+        
+        Vector2 _targetPos = new Vector2(_target.x,this.transform.position.y);
+        
+
+        isMove = false;
+        isKnockBacking = true;
+        eState = EnemyState.KnockBack;
+
+        while (Vector2.Distance(this.transform.position,_targetPos)> 0.02f)//Mathf.Abs(this.transform.position.x - _targetPos.x) <= 0.02f)//Mathf.Abs(this.transform.position.x - _targetPos.x)<= 0.02f)
+        {
+
+            float _speed = Mathf.Abs(this.transform.position.x - _targetPos.x) * Time.deltaTime * 7f;
+            this.transform.position = Vector2.MoveTowards(this.transform.position, _targetPos, _speed);
+
+            yield return null;
+
+            if (!isKnockBacking)
+                break;
+        }
+
+        isKnockBacking = false;
+        isMove = true;
+
+    }
+
+    //죽을때 날라감
     IEnumerator FlyingEnemy()
     {
         Destroy(this.GetComponent<BoxCollider2D>());
@@ -216,6 +249,8 @@ public class Enemy : EnemyInfo
 
     }
 
+    #endregion
+
     void OnDestroy()
     {
         atkBox.heroInBox = null;
@@ -230,6 +265,90 @@ public class Enemy : EnemyInfo
         nowHp = originHp;
         speed = _state._speed;
     }
+
+
+    void WallCheck()
+    {
+
+        for(int i=0;i<walls.Length;++i)
+        {
+            if(walls[i].isLeftWall)
+            {
+                if(isLeft)
+                {
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), walls[i].GetComponent<Collider2D>(),true);
+                }
+                else if(!isLeft && this.transform.position.x < walls[i].transform.position.x)
+                {
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), walls[i].GetComponent<Collider2D>(), true);
+                }
+                else
+                {
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), walls[i].GetComponent<Collider2D>(), false);
+                }
+            }
+            else
+            {
+                if (isLeft && this.transform.position.x > walls[i].transform.position.x)
+                {
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), walls[i].GetComponent<Collider2D>(), true);
+                }
+                else if (!isLeft)
+                {
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), walls[i].GetComponent<Collider2D>(), true);
+                }
+                else
+                {
+                    Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), walls[i].GetComponent<Collider2D>(), false);
+                }
+            }
+        }
+
+
+    }
+
+
+    void RopeKnockBack(Vector2 _target, bool _heroLeft)
+    {
+
+        StartCoroutine(KnockBackRoutine(_target, _heroLeft));
+        
+    }
+
+
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if(coll.gameObject.CompareTag("Hero"))
+        {
+            hitHero = true;
+
+            if(coll.gameObject.GetComponent<Hero>() != null)
+            {
+                if (coll.gameObject.GetComponent<Hero>().hState == HeroState.RopeFlying && !isKnockBacking)
+                {
+                    
+                    RopeKnockBack(coll.gameObject.GetComponent<Hero>().GetRopeTarget(), coll.gameObject.GetComponent<Hero>().isLeft);
+                    
+                }
+
+            }
+        }
+    }
+
+
+    void OnCollisionExit2D(Collision2D coll)
+    {
+
+        if (coll.gameObject.CompareTag("Hero"))
+        {
+            hitHero = false;
+        }
+    }
+
+
+
+
 
 
 

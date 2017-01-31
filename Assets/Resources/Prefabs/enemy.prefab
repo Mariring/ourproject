@@ -177,14 +177,18 @@ MonoBehaviour:
   speed: 3
   atkReadyTime: 0.4
   hpSpr: {fileID: 1000010815583764}
-  nowHp: 0
   originHp: 0
   isDead: 0
+  eState: 0
   stateSpr:
+  - {fileID: 21300000, guid: 26d3ec9fb54566a498f9259f53a859dd, type: 3}
   - {fileID: 21300000, guid: 24e988c5179f5df4d9b00f53ddbfa6ac, type: 3}
+  - {fileID: 21300000, guid: 41adef8ff1993ab46844377f49ecbcea, type: 3}
   - {fileID: 21300000, guid: 535d0c39c51beed4986a888f23e325d9, type: 3}
+  - {fileID: 21300000, guid: aa62243ea0f71cf4aa70b54e1d1570ae, type: 3}
+  - {fileID: 21300000, guid: bf8e75ed244b4a740a2a395db4dddcb5, type: 3}
+  - {fileID: 21300000, guid: ba77c7ee754830a4ea9664b6fd5b4d90, type: 3}
   - {fileID: 21300000, guid: e1afe1a3eebea814caa7dda0d245d9a3, type: 3}
-  - {fileID: 21300000, guid: 24e988c5179f5df4d9b00f53ddbfa6ac, type: 3}
 --- !u!212 &212000011645869854
 SpriteRenderer:
   m_ObjectHideFlags: 1

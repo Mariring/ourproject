@@ -5,7 +5,6 @@ using System.Collections;
 public class ControlButtonListener : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
 
-    Hero hero;
     public HeroControlButton controlBtn;
     public bool isLeft;
 
@@ -15,7 +14,6 @@ public class ControlButtonListener : MonoBehaviour, IPointerDownHandler, IPointe
 
 	void Awake () 
     {
-        hero = GameObject.Find("Hero").gameObject.GetComponent<Hero>();
         pressedTime = 0;
 	}
 	
@@ -52,11 +50,7 @@ public class ControlButtonListener : MonoBehaviour, IPointerDownHandler, IPointe
 
 
         //로프 타고 있는 중
-        if (hero.ropeState.ropeRiding)
-        {
-            controlBtn.PushRopeShootButton();
-            return;
-        }
+        controlBtn.PushRopeShootButton();
 
 
 

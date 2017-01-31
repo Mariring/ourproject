@@ -5403,16 +5403,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d0cc987e968404898dbc8a5709bf18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  neverDie: 1
+  hp: 100
+  originSpeed: 4
   cam: {fileID: 1732022380}
   ropeGauge: {fileID: 644634243}
-  hp: 100
-  neverDie: 1
   atkBox: {fileID: 1873915241}
   backBox: {fileID: 1998557862}
-  isLeft: 0
-  isRunning: 0
   hState: 0
-  originSpeed: 4
+  isLeft: 0
   score: 0
 --- !u!114 &1564298002
 MonoBehaviour:
@@ -5626,8 +5625,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309c1b78e9fd20e44b93a8e6e1388412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preState: 0
   newState: 0
+  idleAniName: able
+  runAniName: run
+  ropeRidingAniName: rope
+  ropeFlyingAniName: dropkick
+  oneComAniName: attack
+  twoComAniName: 
+  threeComAniName: 
+  frontHitAniName: 
+  backHitAniName: 
 --- !u!1 &1578787220
 GameObject:
   m_ObjectHideFlags: 0
@@ -6139,7 +6146,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1732022378}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4, y: -1.21, z: 0}
+  m_LocalPosition: {x: -7.42, y: -1.21, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -6160,7 +6167,7 @@ MonoBehaviour:
   target: {fileID: 2022177406}
   isForceCam: 1
   maxX: 14.7
-  minX: -5
+  minX: -7
   maxY: 999
   minY: -999
   speed: 20

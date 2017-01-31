@@ -53,27 +53,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeNum: 1
   nodeData:
-  - nodeStartDelay: 2
-    spawnEnemyNum: 4
-    spawnEnemey:
-    - _isLeft: 1
-      _speed: 3
+  - nodeStartDelay: 1
+    spawnEnemyNum: 2
+    spawnEnemy:
+    - _isLeft: 0
+      _speed: 4
       _originHp: 1
     - _isLeft: 1
       _speed: 3
       _originHp: 1
-    - _isLeft: 1
-      _speed: 3
-      _originHp: 1
-    - _isLeft: 1
-      _speed: 1
-      _originHp: 2
-    spawnDirLeft: 01010101
+    spawnEnemyValue: 0000000000000000
+    spawnDirLeft: 0001
     spawnDelay:
-    - 1
-    - 1
-    - 1
-    - 1
-    asd: 
+    - 2
+    - 0
+  patternSettingFold: 1
   spawnDelayMin: 0
   spawnDelayMax: 10
+  enemyHpMin: 1
+  enemyHpMax: 10
+  enemySpeedMin: 1
+  enemySpeedMax: 30
+  enemyPatternFold: 1
+  nodeInfoFold: 01010000
+  enemyInfoFold: 01010000

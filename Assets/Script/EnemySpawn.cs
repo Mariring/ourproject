@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Mariring;
 
 public class EnemySpawn : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class EnemySpawn : MonoBehaviour
 
         int spawnDir = Random.Range(0, 2);
 
-        if (hero.ropeState.inRope || hero.ropeState.ropeRiding)
+        if (hero.ropeState.inRope || hero.hState == HeroState.RopeRiding)//hero.ropeState.ropeRiding)
         {
             if (hero.ropeState.ropeLeft)
                 spawnDir = 1;

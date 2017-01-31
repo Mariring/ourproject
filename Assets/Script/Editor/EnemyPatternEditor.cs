@@ -1,30 +1,34 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using Mariring;
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(EnemyPattern))]
+[System.Serializable]
 public class EnemyPatternEditor : Editor
 {
+    [SerializeField]
     SerializedProperty nodeNum;
+    [SerializeField]
     SerializedProperty nodeData;
 
+    [SerializeField]
     SerializedProperty spawnDelayMin;
+    [SerializeField]
     SerializedProperty spawnDelayMax;
 
-
+    [SerializeField]
     EnemyPatternNode[] _enemyPatternNodes;
 
-
+    [SerializeField]
     SerializedProperty enemyPatternFold;
+    [SerializeField]
     SerializedProperty nodeInfoFold;
+    [SerializeField]
     SerializedProperty enemyInfoFold;
 
 
-
-
-
-    //int _noteNum;
 
     void OnEnable()
     {
@@ -38,14 +42,7 @@ public class EnemyPatternEditor : Editor
         nodeInfoFold = serializedObject.FindProperty("nodeInfoFold");
         enemyInfoFold = serializedObject.FindProperty("enemyInfoFold");
 
-
-
         EnemyPattern enemyPattern = (EnemyPattern)target;
-        for (int i = 0; i < enemyPattern.nodeNum; ++i)
-        {
-
-        }
-
 
     }
 
@@ -56,7 +53,7 @@ public class EnemyPatternEditor : Editor
         //base.OnInspectorGUI();    //기본 인스페거에 오버라이딩 됨
         serializedObject.Update();
 
-
+        EditorGUIUtility.LookLikeInspector();
 
         EnemyPattern enemyPattern = (EnemyPattern)target;
 
@@ -200,6 +197,7 @@ public class EnemyPatternEditor : Editor
                     {
                         for (int j = 0; j < enemyPattern.nodeData[i].spawnEnemyNum; ++j)
                         {
+                            enemyPattern.nodeData[i].SyncVariableLength();
 
                             EditorGUILayout.Space();
 
@@ -209,13 +207,17 @@ public class EnemyPatternEditor : Editor
                             EditorStyles.label.fontStyle = FontStyle.Normal;
                             ++EditorGUI.indentLevel;
 
+                            enemyPattern.nodeData[i].spawnEnemyValue[j] = (EnemyValue)EditorGUILayout.EnumPopup("적 종류", enemyPattern.nodeData[i].spawnEnemyValue[j]);
+
                             EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.LabelField("스폰 방향: ");
+                            //Debug.Log(enemyPattern.nodeData[i].spawnDirLeft.Length);
+                            //Debug.Log(j);
                             bool _isLeft = GUILayout.Toggle(enemyPattern.nodeData[i].spawnDirLeft[j], " 왼쪽");
                             if (_isLeft != enemyPattern.nodeData[i].spawnDirLeft[j])
                             {
                                 enemyPattern.nodeData[i].spawnDirLeft[j] = _isLeft;
-                                enemyPattern.nodeData[i].spawnEnemey[j]._isLeft = _isLeft;
+                                enemyPattern.nodeData[i].spawnEnemy[j]._isLeft = _isLeft;
                             }
                             EditorGUILayout.EndHorizontal();
 
@@ -230,17 +232,17 @@ public class EnemyPatternEditor : Editor
 
                             EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.LabelField("적 속도: ");
-                            float _speed = EditorGUILayout.Slider(enemyPattern.nodeData[i].spawnEnemey[j]._speed, enemyPattern.enemySpeedMin, enemyPattern.enemySpeedMax);
-                            if (_speed != enemyPattern.nodeData[i].spawnEnemey[j]._speed)
-                                enemyPattern.nodeData[i].spawnEnemey[j]._speed = _speed;
+                            float _speed = EditorGUILayout.Slider(enemyPattern.nodeData[i].spawnEnemy[j]._speed, enemyPattern.enemySpeedMin, enemyPattern.enemySpeedMax);
+                            if (_speed != enemyPattern.nodeData[i].spawnEnemy[j]._speed)
+                                enemyPattern.nodeData[i].spawnEnemy[j]._speed = _speed;
                             EditorGUILayout.EndHorizontal();
 
 
                             EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.LabelField("적 체력: ");
-                            int _hp = EditorGUILayout.IntSlider((int)enemyPattern.nodeData[i].spawnEnemey[j]._originHp, enemyPattern.enemyHpMin, enemyPattern.enemyHpMax);
-                            if (_hp != enemyPattern.nodeData[i].spawnEnemey[j]._originHp)
-                                enemyPattern.nodeData[i].spawnEnemey[j]._originHp = _hp;
+                            int _hp = EditorGUILayout.IntSlider((int)enemyPattern.nodeData[i].spawnEnemy[j]._originHp, enemyPattern.enemyHpMin, enemyPattern.enemyHpMax);
+                            if (_hp != enemyPattern.nodeData[i].spawnEnemy[j]._originHp)
+                                enemyPattern.nodeData[i].spawnEnemy[j]._originHp = _hp;
                             EditorGUILayout.EndHorizontal();
 
 
@@ -268,6 +270,7 @@ public class EnemyPatternEditor : Editor
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(target, "EditEnemyPattern");
+            EditorUtility.SetDirty(target);
         }
 
 

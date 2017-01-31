@@ -5,7 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(AudioSource))]
 public class SoundEffectManager : MonoBehaviour {
 
-
+    
     public AudioClip[] seClips;
     AudioSource aSource;
 

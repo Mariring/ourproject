@@ -12,11 +12,15 @@ public class CamFollow : MonoBehaviour {
     public float minX;
     public float maxY;
     public float minY;
-    public float speed = 3;
+    public float followSpeed = 3;
 
+    public float originZoomSize;
+    public float originZoomSpeed=3;
+    
+    [HideInInspector]
     public float zoomSize;
-    float originZoomSize;
-    public float zoomSpeed = 3;
+    [HideInInspector]
+    public float zoomSpeed;
     
 
     Vector3 camPos;
@@ -30,7 +34,8 @@ public class CamFollow : MonoBehaviour {
 	void Awake () 
     {
         mainCam = this.GetComponentInChildren<Camera>();
-        originZoomSize = zoomSize;
+        zoomSize = originZoomSize;
+        zoomSpeed = originZoomSpeed;
         beingZoomShot = false;
 	}
 	
@@ -77,7 +82,7 @@ public class CamFollow : MonoBehaviour {
 
     void CamSmoothFollow()
     {
-        float camSpeed = speed;
+        float camSpeed = followSpeed;
 
         if ((Vector2.Distance(camPos, this.gameObject.transform.position) > 2f))
         {
@@ -120,17 +125,40 @@ public class CamFollow : MonoBehaviour {
         StartCoroutine(ShakeCameraRoutine(_maxTime));
     }
 
-    IEnumerator ForceZoomShotRoutine()
+    IEnumerator ForceZoomShotRoutine(float _zoomSize)
     {
+        if (beingZoomShot)
+            yield break;
+
         beingZoomShot = true;
         float originZoom = mainCam.orthographicSize;
-        float zoomSize = originZoom / 1.3f;
+        float zoomSize = _zoomSize;
 
         mainCam.orthographicSize = zoomSize;
 
-        while(mainCam.orthographicSize<originZoom)
+        while(mainCam.orthographicSize != originZoom)
         {
-            mainCam.orthographicSize += (Time.deltaTime * 3f);
+            mainCam.orthographicSize = Mathf.MoveTowards(mainCam.orthographicSize, originZoom, Time.deltaTime * 3f);
+            yield return null;
+        }
+
+        beingZoomShot = false;
+    }
+
+    IEnumerator ForceZoomShotRoutine(float _zoomSize, float _zoomSpeed)
+    {
+        if(beingZoomShot)
+            yield break;
+
+        beingZoomShot = true;
+        float originZoom = mainCam.orthographicSize;
+        float zoomSize = _zoomSize;
+
+        mainCam.orthographicSize = zoomSize;
+
+        while (mainCam.orthographicSize != originZoom)
+        {
+            mainCam.orthographicSize = Mathf.MoveTowards(mainCam.orthographicSize, originZoom, Time.deltaTime * _zoomSpeed);
             yield return null;
         }
 
@@ -138,13 +166,20 @@ public class CamFollow : MonoBehaviour {
     }
 
 
-    public void ForceZoomShot()
+    public void ForceZoomShot(float _zoomSize)
     {
         if (testMode)
             return;
-        StartCoroutine(ForceZoomShotRoutine());
-    }
 
+        StartCoroutine(ForceZoomShotRoutine(_zoomSize));
+    }
+    public void ForceZoomShot(float _zoomSize , float _zoomSpeed)
+    {
+        if (testMode)
+            return;
+
+        StartCoroutine(ForceZoomShotRoutine(_zoomSize, _zoomSpeed));
+    }
 
     void CameraSizeUpdate()
     {
@@ -154,6 +189,13 @@ public class CamFollow : MonoBehaviour {
         
 
         }
+    }
+
+
+    public void SetOriginZoomSizeSpeed()
+    {
+        zoomSpeed = originZoomSpeed;
+        zoomSize = originZoomSize;
     }
 
     public void SetZoomSizeSpeed(float _zoomSize, float _zoomSpeed)

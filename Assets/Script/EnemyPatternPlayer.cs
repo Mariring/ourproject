@@ -165,8 +165,8 @@ public class EnemyPatternPlayer : MonoBehaviour
         GameObject _spawnEnemy = (GameObject)Instantiate(enemy, _SpawnPos.transform.position, Quaternion.identity);
 
 
-        selectedNode.spawnEnemey[nowSpawnEnemyNum]._isLeft = selectedNode.spawnDirLeft[nowSpawnEnemyNum];
-        _spawnEnemy.GetComponent<Enemy>().SetInitState(selectedNode.spawnEnemey[nowSpawnEnemyNum]);
+        selectedNode.spawnEnemy[nowSpawnEnemyNum]._isLeft = selectedNode.spawnDirLeft[nowSpawnEnemyNum];
+        _spawnEnemy.GetComponent<Enemy>().SetInitState(selectedNode.spawnEnemy[nowSpawnEnemyNum]);
 
 
         ++nowSpawnEnemyNum;

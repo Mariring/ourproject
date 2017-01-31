@@ -20,7 +20,7 @@ public class HeroAttackBox : MonoBehaviour {
 	
 	}
     
-    void OnTriggerEnter2D(Collider2D coll)
+    void OnTriggerStay2D(Collider2D coll)
     {
         if (!coll.CompareTag("Enemy"))
             return;

@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Mariring;
 
 public class HeroControl : Hero 
 {
 
-
-    bool isKeyPressed;
 
     
 
@@ -13,103 +12,115 @@ public class HeroControl : Hero
     {
         base.Awake();
 
-        isKeyPressed = false;
     }
 
     void FixedUpdate()
     {
         base.FixedUpdate();
-
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && !isKeyPressed)
-        {
-            isKeyPressed = true;
-            if(isLeft)
-            {
-                InputAttackEnemy();
-            }
-            else
-            {
-                ChangeDirect(true);
-            }
- 
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && !isKeyPressed)
-        {
-
-
-            isKeyPressed = true;
-            if (isLeft)
-            {
-                ChangeDirect(false);
-            }
-            else
-            {
-                InputAttackEnemy();
-            }
-        }
-
-
-
-        if(Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            isKeyPressed = false;
-        }
-        else if(Input.GetKeyUp(KeyCode.RightArrow))
-        {
-
-            isKeyPressed = false;
-        }
-
-        
     }
 
     void Update()
     {
+        base.Update();
+
+
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            PushLeftButton();
+
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            PushRightButton();
+        }
+
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            InputRopeShoot();
+        }
+        else if(Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            InputRopeShoot();
+        }
+
 
     }
 
-    public void ChangeDirect()  //방향전환
+    public void PushLeftButton()
     {
+
+        //컨트롤 할 수 없는 상태
+        if (!GetControlable())
+            return;
+
+
+
+        //로프를 탈 수 있는 상태
+        if (ropeState.ropeRidable && ropeState.ropeLeft)
+        {
+            InputRopeRide();
+            return;
+        }
+
+
+        //얘가 왼쪽이냐 오른쪽이냐.
         if (isLeft)
-            isLeft = false;
+        {
+            //히어로가 로프를 타고있는 중이 아니면 때려
+            if (hState != HeroState.RopeRiding)
+                InputAttackEnemy();
+
+        }
         else
-            isLeft = true;
+        {
+            if(hState == HeroState.Running)
+                ChangeDirect(true);
+            //로프슈팅 중이 아닐 때 방향 바꿔
+            //if (hState != HeroState.RopeFlying)
+
+        }
+
+    }
+
+    public void PushRightButton()
+    {
+        if (!GetControlable())
+            return;
+
+
+        //로프 탈 수 있음
+        if ((ropeState.ropeRidable && !ropeState.ropeLeft))
+        {
+            InputRopeRide();
+            return;
+        }
+
+        //얘가 왼쪽이냐 오른쪽이냐.
+        if (!isLeft)
+        {
+            //히어로가 로프를 타고있는 중이 아니면 때려
+            if (hState != HeroState.RopeRiding)
+                InputAttackEnemy();
+        }
+        else
+        {
+            //로프슈팅 중이 아닐 때 방향 바꿔
+            if (hState == HeroState.Running)
+                ChangeDirect(false);
+
+        }
+
+
     }
 
 
-    public void InputAttackEnemy()  //공격
+    public void InputAttackEnemy()
     {
-        if(ropeState.isRopeShooting)
-        {
-            RopeAttackEnemy();
-            return;
-        }
 
-        if (isPlayingAtkAni)    //애니메이션 진행중이면 X
-            return;
-
-
-        if (comboNum == 3)
-        {
-            sePlayer.PlaySE(2);
-            StartCoroutine(ShakeCharacter(0.1f));
-            return;
-        }
-
-        comboNum += 1;
-        comboTime = 0.8f;
-
-
-        AttackMove();
-
-
-
-        if (comboNum == 3)
-        {
-            ComboExhaust();
-        }
-        //atkBox.enemyInBox.Clear();
+        //공격
+        AttackCheck();
 
     }
 
@@ -121,7 +132,6 @@ public class HeroControl : Hero
 
     public void InputRopeShoot()
     {
-
         LeaveRope();
 
     }

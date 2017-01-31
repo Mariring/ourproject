@@ -442,16 +442,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d0cc987e968404898dbc8a5709bf18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  neverDie: 1
+  hp: 100
+  originSpeed: 4
   cam: {fileID: 0}
   ropeGauge: {fileID: 114000013321965574}
-  hp: 100
-  neverDie: 1
   atkBox: {fileID: 114000012461878608}
   backBox: {fileID: 114000013529606856}
+  hState: 0
   isLeft: 0
   isRunning: 0
-  hState: 0
-  originSpeed: 4
   score: 0
 --- !u!114 &114000012461878608
 MonoBehaviour:

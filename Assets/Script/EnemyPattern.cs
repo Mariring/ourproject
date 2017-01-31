@@ -77,8 +77,10 @@ public class EnemyPattern : MonoBehaviour
         }
 
         nodeData = newEnemyPatternNodes;
-
+        
     }
     
+
+
 
 }

@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
 
     void Awake()
     {
-        UnityEngine.Profiler.maxNumberOfSamplesPerFrame = 120;
+        UnityEngine.Profiler.maxNumberOfSamplesPerFrame = 60;
         Screen.orientation = (ScreenOrientation)Input.deviceOrientation;
         Screen.autorotateToPortraitUpsideDown = false;
         Screen.autorotateToPortrait = false;
