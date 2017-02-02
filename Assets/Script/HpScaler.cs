@@ -12,6 +12,7 @@ public class HpScaler : MonoBehaviour {
     float xMaxSize;
     float yMaxSize;
 
+    float showHpValue;
 	// Use this for initialization
 	void Awake () 
     {
@@ -19,13 +20,19 @@ public class HpScaler : MonoBehaviour {
 
         xMaxSize = bar.gameObject.GetComponent<RectTransform>().rect.width;
         yMaxSize = bar.gameObject.GetComponent<RectTransform>().rect.height;
+
+        showHpValue = hero.hp;
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        bar.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(xMaxSize * (hero.hp / 100f), yMaxSize);
+
+        showHpValue = Mathf.MoveTowards(showHpValue, hero.hp, Time.deltaTime * Mathf.Abs(showHpValue-hero.hp) * 2f);
+
+        bar.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(xMaxSize * (showHpValue / 100f), yMaxSize);
         
+
 	    
 	}
 

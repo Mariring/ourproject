@@ -4,13 +4,13 @@ using Spine.Unity;
 using Mariring;
 
 [RequireComponent(typeof(Hero))]
+[RequireComponent(typeof(SkeletonAnimation))]
 public class HeroAnimation : MonoBehaviour 
 {
 
     Hero hero;
     
     SkeletonAnimation ani;
-
     HeroState preState;
     public HeroState newState;
 

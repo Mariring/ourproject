@@ -28,7 +28,8 @@ namespace Mariring
         RopeFlying,
         RopeAttack,
         FrontHit,
-        BackHit
+        BackHit,
+        Fever
     }
 
     public enum EnemyState
@@ -88,6 +89,7 @@ namespace Mariring
 
             return "attack";
         }
+
 
         public static float GetAttackAnimationTime(AttackStyle _atkStyle)
         {

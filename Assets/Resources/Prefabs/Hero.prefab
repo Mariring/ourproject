@@ -449,9 +449,17 @@ MonoBehaviour:
   ropeGauge: {fileID: 114000013321965574}
   atkBox: {fileID: 114000012461878608}
   backBox: {fileID: 114000013529606856}
+  oneCombo: 0
+  twoCombo: 0
+  threeCombo: 0
+  ropeAttack: 0
+  hpDecreaseTime: 1
+  decreaseHpValue: 10
+  increaseHpValue: 20
+  damageValue: 20
+  spawnScoreObj: {fileID: 0}
   hState: 0
   isLeft: 0
-  isRunning: 0
   score: 0
 --- !u!114 &114000012461878608
 MonoBehaviour:

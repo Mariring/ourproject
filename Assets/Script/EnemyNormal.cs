@@ -2,14 +2,13 @@
 using System.Collections;
 using Mariring;
 
-public class EnemyNormal : Enemy {
+public class EnemyNormal : Enemy 
+{
 
 
     public Sprite[] stateSpr;
-
     SpriteRenderer sprRdr;
 
-    bool isReady;
 
 	// Use this for initialization
 	void Awake () 
@@ -23,7 +22,6 @@ public class EnemyNormal : Enemy {
     void Update()
     {
         base.Update();
-
         StateUpdate();
     }
 
@@ -32,28 +30,39 @@ public class EnemyNormal : Enemy {
         switch(eState)
         {
             case EnemyState.Idle:
+
                 if(!CheckAttackableHero())//Vector2.Distance(this.transform.position,hero.transform.position < 5f)
+                {
+                    if (Vector2.Distance(this.transform.position, hero.transform.position) < 5f && attackCoolTime <= 0)
+                    {
+                        isReady=false;
+                        eState = EnemyState.RunningReady;
+                    }
+                    else if(!atkBox.isBoxInHero)
+                    {
+                        eState = EnemyState.Running;
+                    }
+                }
+                else
                 {
                     if (atkBox.isBoxInHero && attackCoolTime <= 0)
                     {
                         eState = EnemyState.Ready;
                     }
-                    else if (Vector2.Distance(this.transform.position, hero.transform.position) < 5f && attackCoolTime <= 0)
-                    {
-                        eState = EnemyState.RunningReady;
-                    }
-                    else
-                    {
-                        eState = EnemyState.Running;
-                    }
+
                 }
                 break;
 
 
             case EnemyState.Running:
+
+                if (atkBox.isBoxInHero)
+                {
+                    eState = EnemyState.Idle;
+                }
+
                 if (attackCoolTime > 0)
                     return;
-
                 if (Vector2.Distance(this.transform.position, hero.transform.position) < 5f)
                 {
                     eState = EnemyState.RunningReady;
@@ -61,6 +70,8 @@ public class EnemyNormal : Enemy {
                 break;
 
             case EnemyState.RunningReady:
+                if (!isReady)
+                    return;
                 if(atkBox.isBoxInHero)
                 {
                     StartCoroutine(AttackRunningReadyRoutine());
@@ -68,8 +79,6 @@ public class EnemyNormal : Enemy {
                 break;
 
             case EnemyState.Ready:
-                if (!isReady)
-                    StartCoroutine(AttackReadyRoutine());
                 break;
 
             //case EnemyState.Attack:
@@ -89,9 +98,8 @@ public class EnemyNormal : Enemy {
 	void FixedUpdate () 
     {
         base.FixedUpdate();
-
-        // Debug.Log(enemyState);
-        sprRdr.sprite = stateSpr[(int)eState];
+        if(sprRdr != null && stateSpr.Length>0)
+            sprRdr.sprite = stateSpr[(int)eState];
 
 
 	}
@@ -103,7 +111,6 @@ public class EnemyNormal : Enemy {
         {
             if (eState == EnemyState.Idle)
             {
-                eState = EnemyState.Ready;
                 return true;
             }
         }
@@ -112,40 +119,20 @@ public class EnemyNormal : Enemy {
     }
 
 
-
-    IEnumerator AttackReadyRoutine()
-    {
-        isReady = true;
-        
-        yield return new WaitForSeconds(2f);
-
-        if(eState == EnemyState.Ready)
-        {
-            eState = EnemyState.Attack;
-            AttackHero();
-            yield return new WaitForSeconds(0.1f);
-        }
-        eState = EnemyState.Idle;
-        isReady = false;
-        attackCoolTime = 2f;
-        
-    }
-
     IEnumerator AttackRunningReadyRoutine()
     {
 
+        isReady = true;
 
         yield return new WaitForSeconds(0.6f);
         
-        if(eState == EnemyState.RunningReady)
+        isReady = false;
+
+        if (eState == EnemyState.RunningReady)
         {
             eState = EnemyState.Attack;
-            AttackHero();
-            yield return new WaitForSeconds(0.1f);
         }
-
-        attackCoolTime = 2f;
-        eState = EnemyState.Idle;
+        
     }
 
 }

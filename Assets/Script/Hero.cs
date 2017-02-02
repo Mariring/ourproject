@@ -2,15 +2,13 @@
 using System.Collections;
 using Spine.Unity;
 using Mariring;
-
-
-
-
-
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class Hero : MonoBehaviour
 {
+    protected SoundEffectManager sePlayer;
+
     #region Inspector
     [Header("Hero Setting")]
     [Tooltip("※ TestMode : 죽지 않는다!")]
@@ -38,10 +36,24 @@ public class Hero : MonoBehaviour
     public AttackStyle threeCombo;
     public AttackStyle ropeAttack;
 
+    [Header("※ 강유야 너가 해봐...")]
+    [Tooltip("hp가 감소하는 기준 시간")]
+    public float hpDecreaseTime = 1;
+    [Tooltip("~초 마다 감소하는 hp량")]
+    public int decreaseHpValue = 10;
+    [Tooltip("적을 죽이면 증가하는 hp량")]
+    public int increaseHpValue = 20;
+    [Tooltip("적한테 맞으면 감소하는 hp량")]
+    public int damageValue = 20;
+    [Tooltip("적 죽이는 콤보 없어지는 시간")]
+    public float enemyComboDeleteTime=2f;
+
+    [Header("ScoreObject")]
+    public GameObject spawnScoreObj;
     #endregion
 
-    protected SoundEffectManager sePlayer;
 
+    #region StateVariable
     protected bool controlable; //컨트롤 가능여부
     protected bool movable;     //이동 가능여부
 
@@ -52,29 +64,32 @@ public class Hero : MonoBehaviour
     public HeroState hState;
     [HideInInspector]
     public bool isLeft;
-    //[HideInInspector]
-    //public bool isRunning;
     [HideInInspector]
     public RopeState ropeState;
-    Vector2 ropeTarget;
+    #endregion
 
+
+    Vector2 ropeTarget;
     public Vector2 GetRopeTarget()
     {
         return ropeTarget;
     }
 
-    //[HideInInspector]
-    //protected bool isPlayingAtkAni;
-
     float speed;
+
     int speedLevel;
+    int preSpdLv;
 
     protected int comboNum;
     protected float comboTime;
-
+    protected float enemyComboTime;
 
     [HideInInspector]
     public int score;
+
+    [HideInInspector]
+    public int enemyCombo;
+    
 
     
 
@@ -91,11 +106,14 @@ public class Hero : MonoBehaviour
         activeUnBeatable = false;
         //isPlayingAtkAni = false;
 
-        comboTime = 0;
+        comboTime = 0f;
+        enemyComboTime = 0f;
         comboNum = 0;
+        enemyCombo = 0;
 
         speed = originSpeed;
         speedLevel = 0;
+        preSpdLv = speedLevel;
 
         ropeState.ropeRidable = false;
         ropeState.inRope = false;
@@ -115,6 +133,7 @@ public class Hero : MonoBehaviour
     {
         //콤보시간 계산
         ComboTimeUpdate();
+        EnemyComboTimeUpdate();
 
         //콤보별 색상 변경 //현재 사용안함
         //CharacterComboColorSet();
@@ -329,12 +348,16 @@ public class Hero : MonoBehaviour
         //카메라 흔들림
         cam.ShakeCam(0.12f);
 
+        EnemyValue _eValue = _enemy.GetComponent<Enemy>().eValue;
+        Vector2 _pos = _enemy.transform.position;
+
         if (comboNum > 2)
         {
             if (_enemy.GetComponent<Enemy>().EnemyDeathCheck(true))   //피니쉬로 애를 때렸더니 죽었어
             {
                 IncreaseHp();
-                score += 2;     //스코어 2
+                SpawnScore(CalcScore(_eValue, true),_pos);          //스코어 2
+                IncreaseEnemyCombo();
                 //atkBox.enemyInBox.Remove(_enemy.gameObject);
             }
 
@@ -344,7 +367,8 @@ public class Hero : MonoBehaviour
             if (_enemy.GetComponent<Enemy>().EnemyDeathCheck(false)) //그냥 애를 때렸더니 죽었어
             {
                 IncreaseHp();
-                score += 1;     //스코어 1
+                SpawnScore(CalcScore(_eValue, false),_pos);
+                IncreaseEnemyCombo();
                 //atkBox.enemyInBox.Remove(_enemy.gameObject);
             }
         }
@@ -361,7 +385,12 @@ public class Hero : MonoBehaviour
             if (atkBox.enemyInBox[i].GetComponent<Enemy>().EnemyDeathCheck(true))
             {
                 IncreaseHp();
-                score += 3;
+
+                EnemyValue _eValue = atkBox.enemyInBox[i].GetComponent<Enemy>().eValue;
+                Vector2 _pos = atkBox.enemyInBox[i].transform.position;
+                SpawnScore(CalcScore(_eValue, preSpdLv),_pos);
+                IncreaseEnemyCombo();
+
             }
         }
         atkBox.enemyInBox.Clear();
@@ -519,7 +548,7 @@ public class Hero : MonoBehaviour
 
 
         //hp감소
-        hp -= 20;
+        hp -= damageValue;
 
 
         //0보다 낮으면 죽어용
@@ -578,18 +607,18 @@ public class Hero : MonoBehaviour
     IEnumerator RopeJumpingRoutine(float _power)
     {
 
-        int _speedLv = speedLevel;
+        preSpdLv = speedLevel;
         SpeedUp();
 
         float _dis = 0f;
 
         float _startPos = this.transform.position.x;
 
-        if (_speedLv == 0)
+        if (preSpdLv == 0)
             _dis = 10f;
-        else if (_speedLv == 1)
+        else if (preSpdLv == 1)
             _dis = 16f;
-        else if (_speedLv == 2)
+        else if (preSpdLv == 2)
             _dis = 21f;
 
 
@@ -599,9 +628,10 @@ public class Hero : MonoBehaviour
         if(isLeft)
             _xTarget = this.transform.position.x - _dis;// - new Vector2(_dis, 0);
         else
-            _xTarget = this.transform.position.y + _dis;
+            _xTarget = this.transform.position.x + _dis;
 
         ropeTarget = new Vector2(_xTarget, _yTarget);
+        Debug.Log(ropeTarget);
 
         bool yFinish = false;
 
@@ -732,8 +762,8 @@ public class Hero : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1f);
-            hp -= 7;
+            yield return new WaitForSeconds(hpDecreaseTime);
+            hp -= decreaseHpValue;
         }
     }
 
@@ -796,7 +826,7 @@ public class Hero : MonoBehaviour
     //hp 증가
     public void IncreaseHp()
     {
-        hp += 30;
+        hp += increaseHpValue;
         if (hp > 100)
             hp = 100;
     }
@@ -833,6 +863,32 @@ public class Hero : MonoBehaviour
         else
             comboNum = 0;
     }
+
+    void IncreaseEnemyCombo()
+    {
+        enemyCombo += 1;
+        enemyComboTime = enemyComboDeleteTime;
+    }
+
+    void EnemyComboTimeUpdate()
+    {
+
+        if(hState== HeroState.Combo_1 || hState == HeroState.Combo_2 || hState ==HeroState.Combo_3
+            || hState == HeroState.RopeRiding || hState == HeroState.RopeAttack || hState == HeroState.Fever)
+        {
+            return;
+        }
+
+        if (enemyComboTime > 0)
+        {
+            enemyComboTime -= Time.deltaTime;
+        }
+        else
+            enemyCombo = 0;
+
+
+    }
+
 
     //스피드 레벨 업
     void SpeedUp()
@@ -1049,8 +1105,83 @@ public class Hero : MonoBehaviour
     #endregion
 
 
+    #region Score
 
+    int CalcScore(EnemyValue _eValue)
+    {
+        int _score = 500;
 
+        switch(_eValue)
+        {
+            case EnemyValue.Normal:
+                score += _score;
+                return _score;
+        }
+        
+        _score = 1000;
+        score += 1000;
+
+        return _score;
+
+    }
+
+    int CalcScore(EnemyValue _eValue, bool _isFinish)
+    {
+        int _score = 0;
+        int _baseScore = CalcScore(_eValue);
+        int _totalScore = 0;
+
+        if(_isFinish)
+        {
+            _score += 500;
+        }
+
+        _totalScore = _score + _baseScore;
+        score += _score;
+        return _totalScore;
+
+    }
+
+    int CalcScore(EnemyValue _eValue, int _speedLv)
+    {
+        int _score = 0;
+        int _baseScore = CalcScore(_eValue);
+        int _totalScore = 0;
+
+        switch(_speedLv)
+        {
+            case 0:
+
+                _score += 1000;
+                break;
+
+            case 1:
+                _score += 2000;
+                break;
+
+            case 2:
+                _score += 3000;
+                break;
+        }
+
+        _totalScore = _score + _baseScore;
+        score += _score;
+        return _totalScore;
+
+    }
+
+    void SpawnScore(int _score, Vector2 _spawnPos)
+    {
+        if(spawnScoreObj != null)
+        {
+            _spawnPos.y += Random.Range(3.5f,4.5f);
+            _spawnPos.x += Random.Range(-2f, 2f);
+            GameObject _spawnObj = (GameObject)Instantiate(spawnScoreObj, _spawnPos, Quaternion.identity);
+            _spawnObj.GetComponent<Text>().text = _score.ToString();
+        }
+    }
+
+    #endregion
 
 
     //게임 오버

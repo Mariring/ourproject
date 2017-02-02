@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeNum: 1
   nodeData:
-  - nodeStartDelay: 1
+  - nodeStartDelay: 0
     spawnEnemyNum: 1
     spawnEnemy:
     - _isLeft: 0

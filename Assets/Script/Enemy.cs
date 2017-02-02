@@ -6,6 +6,7 @@ using Mariring;
 [System.Serializable]
 public class Enemy : EnemyInfo
 {
+    public EnemyValue eValue = EnemyValue.Normal;
     
     public bool isLeft;
     public float speed;
@@ -24,10 +25,11 @@ public class Enemy : EnemyInfo
 
     [HideInInspector]
     public bool isDead;
+    [HideInInspector]
+    public bool isReady;
     protected bool isMove;
     protected bool isKnockBacking;
     protected bool hitHero;
-
     protected EnemyAttackBox atkBox;
 
 
@@ -86,6 +88,7 @@ public class Enemy : EnemyInfo
             return;
        
 
+
     }
 
     protected void Update()
@@ -119,12 +122,12 @@ public class Enemy : EnemyInfo
 
             if (isLeft)
             {
-                this.gameObject.transform.localScale = new Vector3(-1f, 1f, 1f);
+                this.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
                 this.transform.position = (Vector2.left * speed * Time.deltaTime) + (Vector2)this.transform.position;
             }
             else
             {
-                this.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+                this.gameObject.transform.localScale = new Vector3(-1f, 1f, 1f);
                 this.transform.position = (Vector2.right * speed * Time.deltaTime) + (Vector2)this.transform.position;
             }
         }
@@ -144,6 +147,8 @@ public class Enemy : EnemyInfo
 
 
     }
+
+
 
     public void Damaged()
     {
@@ -173,9 +178,58 @@ public class Enemy : EnemyInfo
 
         return false;
 
+    }
+
+    #region Animation
+
+    public void AttackHeroTimingCheckEvent(Spine.TrackEntry trackEntry, Spine.Event e)
+    {
+        if (e.data.name == "attack")
+        {
+            if (atkBox.heroInBox != null)
+                atkBox.heroInBox.GetDamage();
+        }
 
     }
 
+    public void AnimationComplete(Spine.TrackEntry trackEntry)
+    {
+        switch (eState)
+        {
+            case EnemyState.Idle:
+                break;
+
+            case EnemyState.Running:
+                break;
+
+            case EnemyState.RunningReady:
+                isReady = true;
+                break;
+
+            case EnemyState.Ready:
+                eState = EnemyState.Attack;
+                break;
+
+            case EnemyState.Attack:
+                eState = EnemyState.Idle;
+                attackCoolTime = 2f;
+                break;
+
+            case EnemyState.KnockBack:
+                break;
+
+            case EnemyState.Hit:
+                break;
+
+            case EnemyState.Dead:
+                break;
+
+        }
+    }
+
+
+
+    #endregion
 
     #region Routine
 
@@ -183,23 +237,25 @@ public class Enemy : EnemyInfo
     IEnumerator KnockBackRoutine(Vector2 _target,bool _heroLeft)
     {
 
+        Debug.Log(_target);
+
         if (_heroLeft)
-            _target.x = _target.x - Random.Range(2f, 3f);
+            _target.x = _target.x - Random.Range(1f, 2f);
         else
-            _target.x = _target.x + Random.Range(2f, 3f);
+            _target.x = _target.x + Random.Range(1f, 2f);
 
         
         Vector2 _targetPos = new Vector2(_target.x,this.transform.position.y);
-        
 
+        Debug.Log(_targetPos);
         isMove = false;
         isKnockBacking = true;
         eState = EnemyState.KnockBack;
 
         while (Vector2.Distance(this.transform.position,_targetPos)> 0.02f)//Mathf.Abs(this.transform.position.x - _targetPos.x) <= 0.02f)//Mathf.Abs(this.transform.position.x - _targetPos.x)<= 0.02f)
         {
-
             float _speed = Mathf.Abs(this.transform.position.x - _targetPos.x) * Time.deltaTime * 7f;
+
             this.transform.position = Vector2.MoveTowards(this.transform.position, _targetPos, _speed);
 
             yield return null;
@@ -251,20 +307,6 @@ public class Enemy : EnemyInfo
 
     #endregion
 
-    void OnDestroy()
-    {
-        atkBox.heroInBox = null;
-    }
-
-
-    public void SetInitState(EnemyInitState _state)
-    {
-
-        isLeft = !(_state._isLeft);
-        originHp = _state._originHp;
-        nowHp = originHp;
-        speed = _state._speed;
-    }
 
 
     void WallCheck()
@@ -310,9 +352,8 @@ public class Enemy : EnemyInfo
 
     void RopeKnockBack(Vector2 _target, bool _heroLeft)
     {
-
-        StartCoroutine(KnockBackRoutine(_target, _heroLeft));
-        
+        if(!isKnockBacking)
+            StartCoroutine(KnockBackRoutine(_target, _heroLeft));
     }
 
 
@@ -347,9 +388,19 @@ public class Enemy : EnemyInfo
     }
 
 
+    void OnDestroy()
+    {
+        atkBox.heroInBox = null;
+    }
 
+    public void SetInitState(EnemyInitState _state)
+    {
 
-
+        isLeft = !(_state._isLeft);
+        originHp = _state._originHp;
+        nowHp = originHp;
+        speed = _state._speed;
+    }
 
 
 
