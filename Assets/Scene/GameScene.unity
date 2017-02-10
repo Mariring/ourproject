@@ -11646,7 +11646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309c1b78e9fd20e44b93a8e6e1388412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newState: 0
+  newState: 1
 --- !u!82 &1253341213
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11833,7 +11833,7 @@ MonoBehaviour:
   calculateTangents: 0
   logErrors: 0
   disableRenderingOnOverride: 1
-  _animationName: able
+  _animationName: run
   loop: 1
   timeScale: 1
 --- !u!23 &1253341219
@@ -11902,7 +11902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f7251ac50a8754db7abb6aa124a026, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headFront: {fileID: 21300000, guid: 5086f1cd9c6e01043ba924f24610280b, type: 3}
+  headFront: {fileID: 21300000, guid: 031f3998540e02641ac11a59780aeb31, type: 3}
   headFrontSlot: head
   headBack: {fileID: 0}
   bodyTopFront: {fileID: 0}
@@ -11921,6 +11921,9 @@ MonoBehaviour:
   legRightBottom: {fileID: 0}
   footLeft: {fileID: 0}
   footRight: {fileID: 0}
+  repackedShader: {fileID: 4800000, guid: 1e8a610c9e01c3648bac42585e5fc676, type: 3}
+  runtimeAtlas: {fileID: 0}
+  runtimeMaterial: {fileID: 0}
 --- !u!1 &1263707712
 GameObject:
   m_ObjectHideFlags: 0
@@ -15558,7 +15561,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1670584543
 Transform:
   m_ObjectHideFlags: 0

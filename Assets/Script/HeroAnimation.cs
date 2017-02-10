@@ -153,6 +153,8 @@ public class HeroAnimation : MonoBehaviour
 
     void SetAnimation(string _name, float _timeScale, bool _loop)
     {
+        //ani.AnimationName = _name;
+        //ani.loop = _loop;
         ani.state.SetAnimation(0, _name, _loop);
         ani.timeScale = _timeScale;
     }
