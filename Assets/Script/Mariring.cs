@@ -37,12 +37,22 @@ namespace Mariring
         Idle =0 ,
         Running,
         RunningReady,
+        RunningReadyComplete,
         Ready,
         Attack,
         KnockBack,
         Hit,
         Dead,
+        Rush,
 
+    }
+
+    public enum EnemyRushState
+    {
+        Ready,
+        Start,
+        Rush,
+        Attack,
     }
 
     public enum AttackStyle
@@ -61,9 +71,17 @@ namespace Mariring
         Angry
     }
 
+    public enum EnemyPatternLevel
+    {
+        Hard,
+        Normal,
+        Easy,
+        Fever
+    }
+
+
     public class AttackStyles
     {
-
         
         public static string GetAttackAnimationName(AttackStyle _style)
         {

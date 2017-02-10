@@ -84,6 +84,8 @@ namespace Spine.Unity.Examples {
 
 			// Case 2: Create an attachment from a Unity Sprite (Sprite texture needs to be Read/Write Enabled in the inspector.
 			RegionAttachment newWeapon = dagger.ToRegionAttachmentPMAClone(Shader.Find("Spine/Skeleton"));
+            
+            Debug.Log(dagger.name);
 			newWeapon.SetScale(1.5f, 1.5f);
 			newWeapon.UpdateOffset();
 			int weaponSlotIndex = skeleton.FindSlotIndex(weaponSlot);

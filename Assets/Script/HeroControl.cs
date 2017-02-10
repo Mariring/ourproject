@@ -16,14 +16,17 @@ public class HeroControl : Hero
 
     void FixedUpdate()
     {
+        if (!isPlay)
+            return;
         base.FixedUpdate();
     }
 
     void Update()
     {
+        if (!isPlay)
+            return;
+
         base.Update();
-
-
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -54,6 +57,15 @@ public class HeroControl : Hero
         //컨트롤 할 수 없는 상태
         if (!GetControlable())
             return;
+
+
+        if(hState == HeroState.Fever)
+        {
+            if(!isLeft)
+                ChangeDirect(true);
+
+            return;
+        }
 
 
 
@@ -88,6 +100,16 @@ public class HeroControl : Hero
     {
         if (!GetControlable())
             return;
+
+
+        if (hState == HeroState.Fever)
+        {
+            if (isLeft)
+                ChangeDirect(false);
+
+            return;
+        }
+
 
 
         //로프 탈 수 있음

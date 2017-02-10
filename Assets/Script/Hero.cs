@@ -11,11 +11,13 @@ public class Hero : MonoBehaviour
 
     #region Inspector
     [Header("Hero Setting")]
+    public GameObject sight;
     [Tooltip("※ TestMode : 죽지 않는다!")]
     public bool neverDie;
     [Range(0, 100)]
     [Tooltip("※ 체력")]
-    public int hp;
+    public int originHp;
+
     [Range(0f, 20f)]
     [Tooltip("※ Original Speed")]
     public float originSpeed;
@@ -47,20 +49,34 @@ public class Hero : MonoBehaviour
     public int damageValue = 20;
     [Tooltip("적 죽이는 콤보 없어지는 시간")]
     public float enemyComboDeleteTime=2f;
+    [Tooltip("피버타임 시간")]
+    public float feverTime = 10f;
+    [Tooltip("피버 10콤보 유지시간")]
+    public float needStayTime = 10f;
+    [Tooltip("피버 3콤보 처치 적 수")]
+    public int needThreeCompleteNum = 10;
+    [Tooltip("피버 로프 처치 적 수")]
+    public int needRopeAtkCompleteNum = 10;
+    [Tooltip("Origin Speed 에 더하는 (스피드레벨과 곱해지는 계수)")]
+    public float addSpeedValue=3;
 
     [Header("ScoreObject")]
     public GameObject spawnScoreObj;
+    public GameObject spawnHighScoreObj;
     #endregion
 
-
     #region StateVariable
+
+    //게임 시작함?
+    protected bool isPlay;
+
     protected bool controlable; //컨트롤 가능여부
     protected bool movable;     //이동 가능여부
 
     protected bool unBeatable;  //무적인가
     protected bool activeUnBeatable;
 
-    [HideInInspector]
+    //[HideInInspector]
     public HeroState hState;
     [HideInInspector]
     public bool isLeft;
@@ -68,37 +84,61 @@ public class Hero : MonoBehaviour
     public RopeState ropeState;
     #endregion
 
+    #region RequireVariable
+    
+    [HideInInspector]
+    public int hp;
 
-    Vector2 ropeTarget;
+    //로프 점핑 타겟
+    Vector2 ropeTarget;     
     public Vector2 GetRopeTarget()
     {
         return ropeTarget;
     }
 
+    //스피드
     float speed;
 
-    int speedLevel;
+
+    //스피드 레벨
+    [HideInInspector]
+    public int speedLevel; 
     int preSpdLv;
 
-    protected int comboNum;
-    protected float comboTime;
-    protected float enemyComboTime;
+    protected int comboNum;         //어택 콤보
+    protected float comboTime;      //콤보 타임
+    protected float enemyComboTime; //적 처치 콤보 타임
 
+    //점수
     [HideInInspector]
     public int score;
 
+    //적 처치 콤보
     [HideInInspector]
-    public int enemyCombo;
-    
+    public int enemyCombo;  
 
-    
+    //벽
+    Wall[] walls;
+    #endregion
 
-	protected void Awake ()
+    #region FeverVariable
+
+    bool isFeverMode = false;
+    float nowFeverTime = 0;
+    float feverComboStayTime = 0f;
+    int threeComCompleteNum = 0;
+    int ropeAtkCompleteNum = 0;
+
+    #endregion
+
+
+
+    protected void Awake ()
     {
-
         #region Init
 
-        hState = HeroState.Running;
+        hp = originHp;
+        hState = HeroState.Idle;
 
         controlable = true;
         movable = true;
@@ -120,23 +160,26 @@ public class Hero : MonoBehaviour
         ropeState.ropeTime = 0;
 
         sePlayer = this.GetComponent<SoundEffectManager>();
+        walls = GameObject.FindObjectsOfType<Wall>();
+
+        isPlay = false;
 
         #endregion
 
-        StartCoroutine(DecreaseHpRoutine());
-        StartCoroutine(UnbeatableBlinkRoutine());
+        ropeGauge.gameObject.transform.parent.gameObject.SetActive(false);
     }
 
     #region UpdateFunc
 
     protected void FixedUpdate()
     {
+        if (!isPlay)
+            return;
+
         //콤보시간 계산
         ComboTimeUpdate();
         EnemyComboTimeUpdate();
-
-        //콤보별 색상 변경 //현재 사용안함
-        //CharacterComboColorSet();
+        FeverCheckUpdate();
 
         //로프 탈 수 있는지 확인
         CheckAbleToRopeRidingUpdate();
@@ -208,6 +251,8 @@ public class Hero : MonoBehaviour
     //로프 탈 수 있는지 체크
     void CheckAbleToRopeRidingUpdate()
     {
+
+
         //무적 상태일때 로프는 탈 수 없는 상태
         if (unBeatable || activeUnBeatable)
         {
@@ -247,19 +292,43 @@ public class Hero : MonoBehaviour
     {
 
         ropeState.ropeTime += Time.deltaTime;
-        ropeGauge.value = ropeGauge.maxValue * (ropeState.ropeTime / 2);
 
-        float totalSpeed = speed + (speedLevel * 3);
+
+        float totalSpeed = speed + (speedLevel * addSpeedValue);
 
         if (isLeft)
-            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, this.transform.localEulerAngles.z - (Time.deltaTime * totalSpeed));
-        else
-            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, this.transform.localEulerAngles.z + (Time.deltaTime * totalSpeed));
-
-        if (ropeState.ropeTime > 2f)
         {
-            RopeJumpFail();
+            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, this.transform.localEulerAngles.z - (Time.deltaTime * totalSpeed));
+            this.transform.position = (Vector2)this.transform.position + (Vector2.right * Time.deltaTime);
         }
+        else
+        {
+            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, this.transform.localEulerAngles.z + (Time.deltaTime * totalSpeed));
+            this.transform.position = (Vector2)this.transform.position + (Vector2.left * Time.deltaTime);
+        }
+
+        if(speedLevel==0)
+        {
+            ropeGauge.value = ropeGauge.maxValue * (ropeState.ropeTime / 2);
+
+            if (ropeState.ropeTime > 2f)
+                RopeJumpFail();
+        }
+        else if(speedLevel ==1)
+        {
+            ropeGauge.value = ropeGauge.maxValue * (ropeState.ropeTime / 1.5f);
+            if (ropeState.ropeTime > 1.5f)
+                RopeJumpFail();
+        }
+        else if(speedLevel==2)
+        {
+            ropeGauge.value = ropeGauge.maxValue * (ropeState.ropeTime / 1f);
+
+            if (ropeState.ropeTime > 1f)
+                RopeJumpFail();
+
+        }
+
     }
 
     //이동
@@ -270,7 +339,13 @@ public class Hero : MonoBehaviour
 
         float totalSpeed = speed + (speedLevel * 3);
 
-        //Debug.Log("ASDASD");
+
+        if ((hState == HeroState.Combo_1 || hState == HeroState.Combo_2 || hState == HeroState.Combo_3)
+            && ropeState.inRope)
+            return;
+            
+
+
 
         if (isLeft)
         {
@@ -283,20 +358,38 @@ public class Hero : MonoBehaviour
 
     }
 
+
+
+
+
+
     //게임오브젝트 X방향 뒤집기
     void FlipXUpdate()
     {
+
+        float _scale = 1;
+        if(hState == HeroState.Fever)
+        {
+            _scale = 1.2f;
+        }
+
         if(isLeft)
         {
-            this.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+            this.gameObject.transform.localScale = new Vector3(_scale, _scale, _scale);
         }
         else
         {
-            this.gameObject.transform.localScale = new Vector3(-1f, 1f, 1f);
+            this.gameObject.transform.localScale = new Vector3(-_scale, _scale, _scale);
         }
     }
 
+    void WallCheck()
+    {
+
+    }
     #endregion
+
+
 
     //공격 버튼 눌렀을 때, 공격할 수 있는 상태인가?
     protected void AttackCheck()
@@ -358,6 +451,7 @@ public class Hero : MonoBehaviour
                 IncreaseHp();
                 SpawnScore(CalcScore(_eValue, true),_pos);          //스코어 2
                 IncreaseEnemyCombo();
+                threeComCompleteNum += 1;   //피버 조건 올려주기
                 //atkBox.enemyInBox.Remove(_enemy.gameObject);
             }
 
@@ -390,7 +484,7 @@ public class Hero : MonoBehaviour
                 Vector2 _pos = atkBox.enemyInBox[i].transform.position;
                 SpawnScore(CalcScore(_eValue, preSpdLv),_pos);
                 IncreaseEnemyCombo();
-
+                ropeAtkCompleteNum += 1;
             }
         }
         atkBox.enemyInBox.Clear();
@@ -469,6 +563,7 @@ public class Hero : MonoBehaviour
     //로프 탄다
     protected void RopeRide()
     {
+        ropeGauge.gameObject.transform.parent.gameObject.SetActive(true);
 
         hState = HeroState.RopeRiding;
 
@@ -486,7 +581,7 @@ public class Hero : MonoBehaviour
         this.transform.position = ropeState.rope.transform.position;
         movable = false;
 
-        cam.SetZoomSizeSpeed(2.7f, 1);
+        SetRopeCam(true);
 
     }
 
@@ -497,7 +592,7 @@ public class Hero : MonoBehaviour
             return;
 
 
-        cam.SetOriginZoomSizeSpeed();//카메라 원래대로
+        ropeGauge.gameObject.transform.parent.gameObject.SetActive(false);
 
         if(ropeState.ropeTime > 0.5f)
         {
@@ -505,7 +600,7 @@ public class Hero : MonoBehaviour
 
         }
         else
-        { 
+        {
             RopeJumpFail();
         }
 
@@ -514,14 +609,17 @@ public class Hero : MonoBehaviour
     // 로프실패
     public void RopeJumpFail()
     {
+        ropeGauge.gameObject.transform.parent.gameObject.SetActive(false);
+
         hState = HeroState.BackHit;
 
-        cam.SetOriginZoomSizeSpeed();
+        SetRopeCam(false);
+        cam.ForceChangeOriginZoom();
+        cam.ShakeCam(0.1f);
 
         this.transform.localEulerAngles = new Vector3(0, 0, 0);
 
         sePlayer.PlaySE(0);
-        cam.ForceZoomShot(cam.originZoomSize * 0.9f);
 
         StartCoroutine(UnbeatableTime(1f));
         StartCoroutine(CantMoveTime(0.5f));
@@ -529,9 +627,30 @@ public class Hero : MonoBehaviour
 
     }
 
+
+    void SetRopeCam(bool _rope)
+    {
+        if(_rope)
+        {
+            cam.dontLimit = true;
+            cam.isForceCam = false;
+            cam.SetZoomSizeSpeed(3f, 1);
+        }
+        else
+        {
+            cam.dontLimit = false;
+            cam.isForceCam = true;
+            cam.SetOriginZoomSizeSpeed();
+        }
+    }
+
+
+
     //데미지 받음
     public void GetDamage()
     {
+        if (hState == HeroState.Fever)
+            return;
 
         if (unBeatable || activeUnBeatable)
             return;
@@ -560,15 +679,17 @@ public class Hero : MonoBehaviour
                 GameOver();
         }
 
+
+        this.transform.localEulerAngles = new Vector3(0, 0, 0);
+
+
+        //로프게이지 꺼주자 켜져있을 수도 있쟈나?
+        ropeGauge.gameObject.transform.parent.gameObject.SetActive(false);
+        SetRopeCam(false);
+        cam.SetOriginZoomSizeSpeed();
         //맞았을 때 카메라 줌
         cam.ForceZoomShot(cam.originZoomSize * 0.9f);
 
-        // 로프라이딩 중이였을 땐 
-        if (hState == HeroState.RopeRiding)
-        {
-            cam.SetOriginZoomSizeSpeed();
-            this.transform.localEulerAngles = new Vector3(0, 0, 0);
-        }
 
         //무적타임
         StartCoroutine(UnbeatableTime(1f));
@@ -583,6 +704,73 @@ public class Hero : MonoBehaviour
         SpeedDown();
 
     }
+
+
+
+    #region FeverFunction
+
+    void FeverCheckUpdate()
+    {
+
+        if (isFeverMode)
+        {
+            nowFeverTime -= Time.deltaTime;
+            activeUnBeatable = true;
+            movable = true;
+            hState = HeroState.Fever;
+            speedLevel = 2;
+
+            hp = originHp;
+
+            if(nowFeverTime <=0f)
+            {
+                this.GetComponent<Renderer>().material.color = Color.white;
+                isFeverMode = false;
+
+                hState = HeroState.Running;
+            }
+            return;
+        }
+
+
+        if(enemyCombo>=10)
+        {
+            feverComboStayTime += Time.deltaTime;
+        }
+        else
+        {
+            feverComboStayTime = 0;
+        }
+
+        
+        if(feverComboStayTime >= needStayTime && threeComCompleteNum >= needThreeCompleteNum 
+            &&ropeAtkCompleteNum >= needRopeAtkCompleteNum)
+        {
+
+            if (hState == HeroState.RopeRiding)
+                return;
+
+            isFeverMode = true;
+            nowFeverTime = feverTime;
+            feverComboStayTime = 0;
+            threeComCompleteNum = 0;
+            ropeAtkCompleteNum = 0;
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+    }
+
+    #endregion
 
 
     #region Routines
@@ -631,7 +819,7 @@ public class Hero : MonoBehaviour
             _xTarget = this.transform.position.x + _dis;
 
         ropeTarget = new Vector2(_xTarget, _yTarget);
-        Debug.Log(ropeTarget);
+
 
         bool yFinish = false;
 
@@ -640,7 +828,9 @@ public class Hero : MonoBehaviour
         this.transform.localEulerAngles = new Vector3(0, 0, 0);
         movable = false;
 
-        
+        cam.SetOriginZoomSizeSpeed();
+        cam.SetFollowSpeed(8f);//cam.followSpeed = 8f;
+
         while(Mathf.Abs(this.transform.position.x - _startPos) < _dis)
         {
             if(hState != HeroState.RopeFlying && hState != HeroState.RopeAttack)
@@ -650,10 +840,15 @@ public class Hero : MonoBehaviour
 
             float _totalSpeed = (_dis - Mathf.Abs(this.transform.position.x - _startPos))* Time.deltaTime * 3f;
 
-            //Debug.Log(_xTarget);
-            this.transform.position = Vector2.MoveTowards(this.transform.position, new Vector2(_xTarget, this.transform.position.y), _totalSpeed);
-            //Debug.Log(this.transform.position.x);
+            
 
+            if(_totalSpeed >1.0f)
+            {
+                _totalSpeed = 0.7f;
+            }
+            this.transform.position = Vector2.MoveTowards(this.transform.position, new Vector2(_xTarget, this.transform.position.y), _totalSpeed);
+
+            //Debug.Log(this.transform.position.x);
             if(yFinish)
             {
                 this.gameObject.GetComponent<Rigidbody2D>().gravityScale = 5;
@@ -673,6 +868,9 @@ public class Hero : MonoBehaviour
             
             yield return null;
         }
+
+        SetRopeCam(false);
+        cam.SetOriginFollowSpeed();//cam.followSpeed = cam.originFollowSpeed;
 
         movable = true;
         this.gameObject.GetComponent<Rigidbody2D>().gravityScale = 8;
@@ -726,8 +924,6 @@ public class Hero : MonoBehaviour
             
             if (unBeatable)
             {
-               
-
                 if (colorChange)
                 {
                     this.GetComponent<Renderer>().material.color = wColor;
@@ -763,7 +959,9 @@ public class Hero : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(hpDecreaseTime);
-            hp -= decreaseHpValue;
+
+            if(hState != HeroState.Fever)
+                hp -= decreaseHpValue;
         }
     }
 
@@ -801,7 +999,6 @@ public class Hero : MonoBehaviour
     }
 
     #endregion
-
 
     #region CalcFunctions
 
@@ -922,7 +1119,6 @@ public class Hero : MonoBehaviour
 
     #endregion
 
-
     #region ColliderFunc
 
     void OnTriggerEnter2D(Collider2D coll)
@@ -956,10 +1152,14 @@ public class Hero : MonoBehaviour
             //    return;
 
             //ropeState.isRopeShooting = false;
+            //if (hState == HeroState.Combo_1 || hState == HeroState.Combo_2 || hState == HeroState.Combo_3)
+            //{
+            //    movable = false;
+            //    return;
+            //}
 
             if (coll.gameObject.GetComponent<Wall>().isLeftWall && isLeft)
             {
-
                 ChangeDirect(false);
             }
             else if ((!coll.gameObject.GetComponent<Wall>().isLeftWall && !isLeft))
@@ -976,11 +1176,25 @@ public class Hero : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D coll)
     {
+        if (coll.gameObject.CompareTag("Wall"))
+        {
+            if (hState == HeroState.Combo_1 || hState == HeroState.Combo_2 || hState == HeroState.Combo_3)
+                return;
 
+            if (coll.gameObject.GetComponent<Wall>().isLeftWall && isLeft)
+            {
+                ChangeDirect(false);
+            }
+            else if ((!coll.gameObject.GetComponent<Wall>().isLeftWall && !isLeft))
+            {
+                ChangeDirect(true);
+            }
+
+
+        }
     }
 
     #endregion
-
 
     #region SpineEventFunc
 
@@ -1021,7 +1235,8 @@ public class Hero : MonoBehaviour
         //어택 시 잠시 멈추게됨, 때리는동안 무적상태
         if(e.data.name == "attackstart")
         {
-            movable = false;
+            if(!isFeverMode)
+                movable = false;
             activeUnBeatable = true;
         }
 
@@ -1104,7 +1319,6 @@ public class Hero : MonoBehaviour
 
     #endregion
 
-
     #region Score
 
     int CalcScore(EnemyValue _eValue)
@@ -1172,22 +1386,45 @@ public class Hero : MonoBehaviour
 
     void SpawnScore(int _score, Vector2 _spawnPos)
     {
-        if(spawnScoreObj != null)
+        GameObject _spawnScoreObj;
+        if (_score>=1000)
         {
+            _spawnScoreObj = spawnHighScoreObj;
+        }
+        else
+        {
+            _spawnScoreObj = spawnScoreObj;
+        }
+
+
+        //if(spawnScoreObj != null)
+        //{
             _spawnPos.y += Random.Range(3.5f,4.5f);
             _spawnPos.x += Random.Range(-2f, 2f);
-            GameObject _spawnObj = (GameObject)Instantiate(spawnScoreObj, _spawnPos, Quaternion.identity);
+            GameObject _spawnObj = (GameObject)Instantiate(_spawnScoreObj, _spawnPos, Quaternion.identity);
             _spawnObj.GetComponent<Text>().text = _score.ToString();
-        }
+        //}
     }
 
     #endregion
 
 
     //게임 오버
-    void GameOver()
+    public void GameOver()
     {
+        if (neverDie)
+            return;
         Time.timeScale = 0;
+    }
+
+    public void GameStart()
+    {
+        isPlay = true;
+        hState = HeroState.Running;
+        
+        //루틴 시작
+        StartCoroutine(DecreaseHpRoutine());
+        StartCoroutine(UnbeatableBlinkRoutine());
     }
 
 

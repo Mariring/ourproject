@@ -442,8 +442,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d0cc987e968404898dbc8a5709bf18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sight: {fileID: 0}
   neverDie: 1
-  hp: 100
+  originHp: 0
   originSpeed: 4
   cam: {fileID: 0}
   ropeGauge: {fileID: 114000013321965574}
@@ -457,10 +458,19 @@ MonoBehaviour:
   decreaseHpValue: 10
   increaseHpValue: 20
   damageValue: 20
+  enemyComboDeleteTime: 2
+  feverTime: 10
+  needStayTime: 10
+  needThreeCompleteNum: 10
+  needRopeAtkCompleteNum: 10
   spawnScoreObj: {fileID: 0}
+  spawnHighScoreObj: {fileID: 0}
   hState: 0
   isLeft: 0
+  hp: 100
+  speedLevel: 0
   score: 0
+  enemyCombo: 0
 --- !u!114 &114000012461878608
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -512,6 +522,9 @@ MonoBehaviour:
   dirX: 0
   value: 0
   maxValue: 100
+  colorChange: 0
+  startColor: {r: 1, g: 1, b: 1, a: 1}
+  endColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &114000013529606856
 MonoBehaviour:
   m_ObjectHideFlags: 1

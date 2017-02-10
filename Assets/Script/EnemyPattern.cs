@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using Mariring;
 
 
 [AddComponentMenu("Maririg/EnemyPattern")]
@@ -9,6 +9,9 @@ public class EnemyPattern : MonoBehaviour
 {
 
     //[ContextMenuItem("SetNodeDelayArray","NodeDelaySet")]
+    [SerializeField]
+    public EnemyPatternLevel patternLv;
+
     [Tooltip("이 패턴에 들어갈 사이클 수")]
     [Range(1,4)]
     [SerializeField]
@@ -24,10 +27,10 @@ public class EnemyPattern : MonoBehaviour
     public float spawnDelayMin =0f;
     [SerializeField]
     public float spawnDelayMax = 100f;
-    [SerializeField]
-    public int enemyHpMin = 1;
-    [SerializeField]
-    public int enemyHpMax = 50;
+    //[SerializeField]
+    //public int enemyHpMin = 1;
+    //[SerializeField]
+    //public int enemyHpMax = 50;
     [SerializeField]
     public float enemySpeedMin = 1f;
     [SerializeField]

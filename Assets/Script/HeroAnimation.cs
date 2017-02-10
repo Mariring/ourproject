@@ -66,6 +66,7 @@ public class HeroAnimation : MonoBehaviour
 	void Update () 
     {
 
+
         newState = hero.hState;
 
 
@@ -90,7 +91,15 @@ public class HeroAnimation : MonoBehaviour
                 break;
 
             case HeroState.Running:
-                SetAnimation(runAniName, 1, true);
+                float _aniSpeed = 0f;
+                if (hero.speedLevel == 0)
+                    _aniSpeed = 1;
+                else if (hero.speedLevel == 1)
+                    _aniSpeed = 1.5f;
+                else if (hero.speedLevel == 2)
+                    _aniSpeed = 2f;
+
+                SetAnimation(runAniName, _aniSpeed, true);
                 break;
 
             case HeroState.Combo_1:
@@ -133,6 +142,9 @@ public class HeroAnimation : MonoBehaviour
                 SetAnimation(backHitAniName, 1f, false);
                 break;
 
+            case HeroState.Fever:
+                SetAnimation(threeComAniName, 2f, true);
+                break;
 
 
         }

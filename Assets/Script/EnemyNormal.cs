@@ -6,20 +6,20 @@ public class EnemyNormal : Enemy
 {
 
 
-    public Sprite[] stateSpr;
-    SpriteRenderer sprRdr;
-
+    bool isReady;
 
 	// Use this for initialization
-	void Awake () 
+    protected void Awake() 
     {
         base.Awake();
-        sprRdr = this.GetComponent<SpriteRenderer>();
-        isReady = false;
 	}
-	
 
-    void Update()
+    protected void Start()
+    {
+        base.Start();
+    }
+
+    protected void Update()
     {
         base.Update();
         StateUpdate();
@@ -35,7 +35,6 @@ public class EnemyNormal : Enemy
                 {
                     if (Vector2.Distance(this.transform.position, hero.transform.position) < 5f && attackCoolTime <= 0)
                     {
-                        isReady=false;
                         eState = EnemyState.RunningReady;
                     }
                     else if(!atkBox.isBoxInHero)
@@ -56,27 +55,35 @@ public class EnemyNormal : Enemy
 
             case EnemyState.Running:
 
-                if (atkBox.isBoxInHero)
-                {
-                    eState = EnemyState.Idle;
-                }
+                //if (atkBox.isBoxInHero)
+                //{
+                //    eState = EnemyState.Idle;
+                //}
 
                 if (attackCoolTime > 0)
                     return;
+
                 if (Vector2.Distance(this.transform.position, hero.transform.position) < 5f)
                 {
                     eState = EnemyState.RunningReady;
                 }
                 break;
 
+
             case EnemyState.RunningReady:
-                if (!isReady)
+                break;
+
+            case EnemyState.RunningReadyComplete:
+                if (isReady)
                     return;
-                if(atkBox.isBoxInHero)
+                if (atkBox.isBoxInHero)
                 {
+                    // eState = EnemyState.Attack;
+                    isReady = true;
                     StartCoroutine(AttackRunningReadyRoutine());
                 }
                 break;
+
 
             case EnemyState.Ready:
                 break;
@@ -95,11 +102,9 @@ public class EnemyNormal : Enemy
     }
 
 	// Update is called once per frame
-	void FixedUpdate () 
+	protected void FixedUpdate () 
     {
         base.FixedUpdate();
-        if(sprRdr != null && stateSpr.Length>0)
-            sprRdr.sprite = stateSpr[(int)eState];
 
 
 	}
@@ -121,18 +126,12 @@ public class EnemyNormal : Enemy
 
     IEnumerator AttackRunningReadyRoutine()
     {
-
         isReady = true;
 
         yield return new WaitForSeconds(0.6f);
-        
-        isReady = false;
 
-        if (eState == EnemyState.RunningReady)
-        {
-            eState = EnemyState.Attack;
-        }
-        
+        isReady = false;
+        eState = EnemyState.Attack;
     }
 
 }

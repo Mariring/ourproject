@@ -76,11 +76,11 @@ public class EnemyPatternEditor : Editor
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Hp MinMax Setting", EditorStyles.boldLabel);
-            EditorGUILayout.BeginHorizontal();
-            enemyPattern.enemyHpMin = EditorGUILayout.IntField(enemyPattern.enemyHpMin);
-            enemyPattern.enemyHpMax = EditorGUILayout.IntField(enemyPattern.enemyHpMax);
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.LabelField("Hp MinMax Setting", EditorStyles.boldLabel);
+            //EditorGUILayout.BeginHorizontal();
+            //enemyPattern.enemyHpMin = EditorGUILayout.IntField(enemyPattern.enemyHpMin);
+            //enemyPattern.enemyHpMax = EditorGUILayout.IntField(enemyPattern.enemyHpMax);
+            //EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
 
@@ -101,6 +101,9 @@ public class EnemyPatternEditor : Editor
 
 
         #region NodeSetting
+
+        enemyPattern.patternLv = (EnemyPatternLevel)EditorGUILayout.EnumPopup("Pattern Level", enemyPattern.patternLv);
+
 
         EditorGUILayout.LabelField("Node Setting", EditorStyles.boldLabel);
 
@@ -240,7 +243,7 @@ public class EnemyPatternEditor : Editor
 
                             EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.LabelField("적 체력: ");
-                            int _hp = EditorGUILayout.IntSlider((int)enemyPattern.nodeData[i].spawnEnemy[j]._originHp, enemyPattern.enemyHpMin, enemyPattern.enemyHpMax);
+                            int _hp = EditorGUILayout.IntSlider((int)enemyPattern.nodeData[i].spawnEnemy[j]._originHp,1, 3);
                             if (_hp != enemyPattern.nodeData[i].spawnEnemy[j]._originHp)
                                 enemyPattern.nodeData[i].spawnEnemy[j]._originHp = _hp;
                             EditorGUILayout.EndHorizontal();

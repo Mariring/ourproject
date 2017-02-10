@@ -21,7 +21,7 @@ TagManager:
   - Hero
   - Enemy
   - Ground
-  - 
+  - Wall
   - 
   - 
   - 
@@ -48,6 +48,9 @@ TagManager:
     locked: 0
   - name: BackGround
     uniqueID: 3459232475
+    locked: 0
+  - name: BackGroundFront
+    uniqueID: 1079015213
     locked: 0
   - name: Ring
     uniqueID: 3772279331

@@ -5,7 +5,9 @@ public class GameManager : MonoBehaviour {
 
     static GameManager gManager;
     private static GameObject containObj;
-
+    
+    [Range(0, 3f)]
+    public float timeScale;
 
     public static GameManager GetManager()
     {
@@ -24,7 +26,7 @@ public class GameManager : MonoBehaviour {
 
     void Awake()
     {
-        UnityEngine.Profiler.maxNumberOfSamplesPerFrame = 60;
+        //UnityEngine.Profiler.maxNumberOfSamplesPerFrame = 60;
         Screen.orientation = (ScreenOrientation)Input.deviceOrientation;
         Screen.autorotateToPortraitUpsideDown = false;
         Screen.autorotateToPortrait = false;
@@ -40,6 +42,16 @@ public class GameManager : MonoBehaviour {
         else if (gManager != this)
         {
             Destroy(gameObject);
+        }
+    }
+
+    void Update()
+    {
+        //Time.timeScale = timeScale;
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Application.LoadLevel(Application.loadedLevel);
         }
     }
 

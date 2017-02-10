@@ -6,42 +6,78 @@ using Mariring;
 
 [RequireComponent(typeof(Enemy))]
 [RequireComponent(typeof(SkeletonAnimation))]
-public class EnemyAnimation : MonoBehaviour 
+[System.Serializable]
+public class EnemyAnimation : MonoBehaviour
 {
+    #region Variable
 
-    Enemy enemy;
-
-    SkeletonAnimation ani;
+    [SerializeField]
+    public Enemy enemy;
+    [SerializeField]
+    public SkeletonAnimation ani;
 
     EnemyState preState;
     public EnemyState newState;
 
+    [SerializeField]
+    public string enteranceAniName;
+    [SerializeField]
     public string idleAniName;
+    [SerializeField]
     public string runAniName;
+    [SerializeField]
     public string runReadyAniName;
+    [SerializeField]
     public string runReadyAfterAniName;
+    [SerializeField]
     public string readyAniName;
+    [SerializeField]
     public string attackAniName;
+    [SerializeField]
     public string knockBackAniName;
+    [SerializeField]
     public string hitAniName;
+    [SerializeField]
     public string deadAniName;
+    [SerializeField]
+    public string flyingAniName;
 
 
+    [SerializeField]
+    public string readyRushAniName;
+    [SerializeField]
+    public string startRushAniName;
+    [SerializeField]
+    public string rushAniName;
+    [SerializeField]
+    public string rushAttackAniName;
 
-	// Use this for initialization
-	void Start () 
+    [SerializeField]
+    public string angryWalkAniName;
+
+    #endregion
+
+    //angry
+    bool aniUnbeatable;
+
+
+    // Use this for initialization
+	protected void Start () 
     {
-        ani = this.GetComponent<SkeletonAnimation>();
-        enemy = this.GetComponent<Enemy>();
+        //ani = this.GetComponent<SkeletonAnimation>();
+        //enemy = this.GetComponent<Enemy>();
 
+        aniUnbeatable = false;
 
         ani.state.Event += enemy.AttackHeroTimingCheckEvent;
         ani.state.Complete += enemy.AnimationComplete;
         ani.state.Complete += AnimationComplete;
+
+        SetAnimationState();
 	}
 	
 	// Update is called once per frame
-	void Update () 
+    protected void Update() 
     {
         newState = enemy.eState;
 
@@ -51,6 +87,9 @@ public class EnemyAnimation : MonoBehaviour
             preState = newState;
 
         }
+
+        if (enemy.eValue == EnemyValue.Angry)
+            AngryStateUpdateCheck();
 
 	}
 
@@ -66,11 +105,18 @@ public class EnemyAnimation : MonoBehaviour
 
 
             case EnemyState.Running:
-                SetAnimation(runAniName, 1, true);
-                break;
+                {
+                    SetAnimation(runAniName, 1, true);
+                    break;
+
+                }
 
             case EnemyState.RunningReady:
                 SetAnimation(runReadyAniName, 1, false);
+                break;
+
+            case EnemyState.RunningReadyComplete:
+                SetAnimation(runReadyAfterAniName, 1, true);
                 break;
 
             case EnemyState.Ready:
@@ -96,7 +142,25 @@ public class EnemyAnimation : MonoBehaviour
         }
     }
 
-    void SetAnimation(string _name, float _timeScale, bool _loop)
+    void AngryStateUpdateCheck()
+    {
+
+        if (enemy.isUnbeatable)//angryEnemy.eState == EnemyState.Running)
+        {
+            if (!aniUnbeatable)
+            {
+                SetAnimation(angryWalkAniName, 1, true);
+                aniUnbeatable = true;
+            }
+        }
+        else
+        {
+            aniUnbeatable = false;
+        }
+    }
+
+
+    protected void SetAnimation(string _name, float _timeScale, bool _loop)
     {
         ani.state.SetAnimation(0, _name, _loop);
         ani.timeScale = _timeScale;
@@ -107,10 +171,14 @@ public class EnemyAnimation : MonoBehaviour
     {
         if(trackEntry.animation.name == runReadyAniName)
         {
-            if(newState == EnemyState.RunningReady && enemy.isReady)
-            {
-                SetAnimation(runReadyAfterAniName, 1, true);
-            }
+
+
+
+
+            //if(newState == EnemyState.RunningReady)
+            //{
+               
+            //}
         }
 
         //switch (enemy.eState)

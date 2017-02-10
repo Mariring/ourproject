@@ -17,7 +17,16 @@ public class HeroAttackBox : MonoBehaviour {
 	
 	void Update () 
     {
-	
+
+        for (int i = 0; i < enemyInBox.Count; ++i)
+        {
+            if (enemyInBox[i] == null)
+            {
+                enemyInBox.Remove(enemyInBox[i]);
+                break;
+            }
+        }
+
 	}
     
     void OnTriggerStay2D(Collider2D coll)

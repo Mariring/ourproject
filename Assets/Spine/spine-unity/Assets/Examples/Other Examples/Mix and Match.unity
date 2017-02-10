@@ -127,15 +127,15 @@ MonoBehaviour:
   newHandOffset: {x: 0.34, y: -0.07}
   newHandRotation: 62.23
   handTexture: {fileID: 0}
-  dagger: {fileID: 21300000, guid: 2412d1d8498463f49ae6ebe3a66ffae9, type: 3}
+  dagger: {fileID: 21300000, guid: 5086f1cd9c6e01043ba924f24610280b, type: 3}
   daggerName: dagger
   weaponSlot: weapon
-  applyHeadRegion: 0
+  applyHeadRegion: 1
   headSource: {fileID: 11400000, guid: a9d85e8796d75384199c06f6fdbb0d73, type: 2}
   headRegion: head
   headSlot: head
   headAttachmentName: head
-  repack: 1
+  repack: 0
   repackedShader: {fileID: 4800000, guid: 1e8a610c9e01c3648bac42585e5fc676, type: 3}
   runtimeAtlas: {fileID: 0}
   runtimeMaterial: {fileID: 0}

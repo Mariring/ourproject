@@ -51,23 +51,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c49ee85696c06548a525f1e5d5f5110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  patternLv: 0
   nodeNum: 1
   nodeData:
-  - nodeStartDelay: 0
-    spawnEnemyNum: 1
+  - nodeStartDelay: 1
+    spawnEnemyNum: 3
     spawnEnemy:
+    - _isLeft: 0
+      _speed: 2
+      _originHp: 1
+    - _isLeft: 1
+      _speed: 5
+      _originHp: 1
     - _isLeft: 0
       _speed: 3
       _originHp: 1
-    spawnEnemyValue: 00000000
-    spawnDirLeft: 00
+    spawnEnemyValue: 000000000000000000000000
+    spawnDirLeft: 000100
     spawnDelay:
     - 1
-  patternSettingFold: 1
+    - 1
+    - 1
+  patternSettingFold: 0
   spawnDelayMin: 0
-  spawnDelayMax: 10
-  enemyHpMin: 1
-  enemyHpMax: 10
+  spawnDelayMax: 20
   enemySpeedMin: 1
   enemySpeedMax: 30
   enemyPatternFold: 1

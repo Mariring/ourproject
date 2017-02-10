@@ -29,10 +29,13 @@ public class HpScaler : MonoBehaviour {
     {
 
         showHpValue = Mathf.MoveTowards(showHpValue, hero.hp, Time.deltaTime * Mathf.Abs(showHpValue-hero.hp) * 2f);
-
         bar.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(xMaxSize * (showHpValue / 100f), yMaxSize);
         
 
+        if(showHpValue <= 0)
+        {
+            hero.GameOver();
+        }
 	    
 	}
 
