@@ -11902,8 +11902,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f7251ac50a8754db7abb6aa124a026, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headFront: {fileID: 21300000, guid: 031f3998540e02641ac11a59780aeb31, type: 3}
-  headFrontSlot: head
+  headFront: {fileID: 21300000, guid: 75646f4e24f32b24e9e0ea74176e7d5d, type: 3}
+  headFrontSlot: leftarm001
   headBack: {fileID: 0}
   bodyTopFront: {fileID: 0}
   bodyTopBack: {fileID: 0}
